@@ -1,0 +1,10 @@
+
+/* {{modelName}} Routes */
+
+Route::get('/{{modelNamePluralLowerCase}}','{{modelName}}Controller@all');
+Route::get('/{{modelNameSingularLowerCase}}/{id}','{{modelName}}Controller@find');
+Route::put('/{{modelNameSingularLowerCase}}','{{modelName}}Controller@put');
+Route::patch('/{{modelNameSingularLowerCase}}/{id}','{{modelName}}Controller@patch');
+Route::delete('/{{modelNameSingularLowerCase}}/{id}','{{modelName}}Controller@delete');
+
+/* End {{modelName}} Routes */

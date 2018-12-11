@@ -1,0 +1,38 @@
+{
+    "name": "andreacivita/api-crud-generator",
+    "description": "Simple API Crud generator for Laravel",
+    "type": "library",
+     "keywords": [
+        "laravel",
+        "crud",
+        "crud generator",
+        "laravel crud generator",
+        "api generator"
+    ],
+    "require": {
+        "php": "^7.2",
+        "laravel/framework": "^5.7"
+    },
+    "license": "LGPL",
+    "authors": [
+        {
+            "name": "Andrea Civita",
+            "email": "andreacivita994@gmail.com",
+	    "homepage": "https://www.andreacivita.it/"	   		    
+        }
+    ],
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "autoload": {
+        "psr-4": {
+            "AndreaCivita\\ApiCrudGenerator\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "AndreaCivita\\ApiCrudGenerator\\ApiCrudGeneratorServiceProvider"
+            ]
+        }
+    }   
+}

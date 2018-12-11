@@ -1,0 +1,50 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Http\Requests\{{modelName}}Request;
+use App\Model\{{modelName}};
+
+class {{modelName}}Controller extends Controller
+{
+
+    public function all()
+    {
+        return response()->json({{modelName}}::all(),200);
+    }
+
+    public function find($id)
+    {
+       return response()->json({{modelName}}::findOrFail($id),200);
+    }
+
+
+    public function put({{modelName}}Request $request)
+    {
+        ${{modelNameSingularLowerCase}} = {{modelName}}::create($request->all());
+
+        return response()->json(${{modelNameSingularLowerCase}}, 201);
+    }
+
+    public function show($id)
+    {
+        ${{modelNameSingularLowerCase}} = {{modelName}}::findOrFail($id);
+
+        return response()->json(${{modelNameSingularLowerCase}});
+    }
+
+    public function patch({{modelName}}Request $request, $id)
+    {
+        ${{modelNameSingularLowerCase}} = {{modelName}}::findOrFail($id);
+        ${{modelNameSingularLowerCase}}->update($request->all());
+
+        return response()->json(${{modelNameSingularLowerCase}}, 200);
+    }
+
+    public function delete($id)
+    {
+        if({{modelName}}::destroy($id))
+            return response()->json("DELETED", 204);
+        return response()->json("Errored", 504);
+    }
+}
