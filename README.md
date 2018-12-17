@@ -74,6 +74,7 @@ Remember that all api routes have 'api/' prefix.
 This package is covered by LGPL license. You are able to do whatever you want with this code.
 
 Please feel free to fork this package and contribute by submitting a pull request to enhance the functionalities.
+You can see issues or enhancement and assign task for contributing :)
 
 **Remember that all modifications must be under the same license (or GNU GPLv3).**
 
