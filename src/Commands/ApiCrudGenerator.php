@@ -3,7 +3,10 @@
 namespace AndreaCivita\ApiCrudGenerator\Commands;
 
 use Illuminate\Console\Command;
+use Illuminate\Database\QueryException;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Schema;
 
 class ApiCrudGenerator extends Command
 {
@@ -44,14 +47,36 @@ class ApiCrudGenerator extends Command
     {
 
         $name = $this->argument('name');
-        $table = $this->option('table');
-        $timestamps = $this->option('timestamps');
 
+        //if $name === 'all' then generate crud for all tables.
 
-        $this->controller($name);
-        $this->model($name, $table, $timestamps);
-        $this->request($name);
-        $this->routes($name, $table);
+        if (strtolower($name) === "all") {
+            //Get all tables from db
+            try {
+                $tables = DB::select('SHOW TABLES');
+                foreach ($tables as $table) {
+                    $columns = Schema::getColumnListing($table->Tables_in_crud);
+                    $table = $table->Tables_in_crud;
+                    $name = str_singular($table);
+                    in_array('created_at', $columns) ? $timestamps = true : $timestamps = false;
+                    $this->controller($name);
+                    $this->model($name, $table, $timestamps);
+                    $this->request($name);
+                    $this->routes($name, $table);
+                }
+            } catch (QueryException $exception) {
+                return $exception;
+            }
+        } else {
+            $table = $this->option('table');
+            $timestamps = $this->option('timestamps');
+            $this->controller($name);
+            $this->model($name, $table, $timestamps);
+            $this->request($name);
+            $this->routes($name, $table);
+        }
+
+        return 0;
     }
 
     /**
@@ -59,7 +84,8 @@ class ApiCrudGenerator extends Command
      * @param $type
      * @return bool|string
      */
-    protected function getStub($type)
+    protected
+    function getStub($type)
     {
         return file_get_contents(resource_path("stubs/$type.stub"));
     }
@@ -71,7 +97,8 @@ class ApiCrudGenerator extends Command
      * @param $table string name of DB table
      * @param $timestamps boolean set timestamps true | false
      */
-    protected function model($name, $table, $timestamps)
+    protected
+    function model($name, $table, $timestamps)
     {
         $table === "default" ? $table = strtolower(str_plural($name)) : null;
         $timeDeclaration = 'public $timestamps = false;';
@@ -102,7 +129,8 @@ class ApiCrudGenerator extends Command
      * Create controller from controller.stub
      * @param $name
      */
-    protected function controller($name)
+    protected
+    function controller($name)
     {
         $controllerTemplate = str_replace(
             [
@@ -125,7 +153,8 @@ class ApiCrudGenerator extends Command
      * Generate Request from request.stub
      * @param $name
      */
-    protected function request($name)
+    protected
+    function request($name)
     {
         $requestTemplate = str_replace(
             ['{{modelName}}'],
@@ -143,7 +172,8 @@ class ApiCrudGenerator extends Command
      * Generate routes
      * @param $name
      */
-    public function routes($name, $table)
+    public
+    function routes($name, $table)
     {
         $table === "default" ? $table = strtolower(str_plural($name)) : null;
         $requestTemplate = str_replace(
