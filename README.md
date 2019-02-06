@@ -9,7 +9,7 @@ Install the package through [Composer](https://getcomposer.org/).
 Run the Composer require command from the Terminal:
 
 ```sh
-composer require andreacivita/api-crud-generator
+composer require andreacivita/api-crud-generator --dev
 ```
 
 ### SETUP
@@ -24,7 +24,22 @@ Select andreacivita/api-crud-generator and setup it's complete.
 
 ## USAGE
 
-Usage of this package is very simple. Now i suppose generation of CRUD operations of Car db table.
+### Managing all database
+Usage of this package is very simple.
+
+First, let's supposing I want to generate CRUD for all table in my db.
+
+So, we run
+
+```sh
+php artisan make:crud All
+```
+
+No further options required. Your setup is complete!
+
+### Managing a single db table
+
+Now i suppose generation of CRUD operations of Car db table.
 
 Run this command:
 
