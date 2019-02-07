@@ -26,11 +26,15 @@ class {{modelName}}Test extends TestCase
 
         public function testPut(){
             // You must implement test with validators
+            // Now it's filled with simple assertion
+                        $this->assertTrue(true);
         }
 
 
         public function testPatch(){
             // You must implement test with validators
+            // Now it's filled with simple assertion
+            $this->assertTrue(true);
         }
 
         public function testDelete(){

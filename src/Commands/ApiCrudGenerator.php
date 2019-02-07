@@ -57,7 +57,7 @@ class ApiCrudGenerator extends Command
             try {
                 $tables = DB::select('SHOW TABLES');
                 foreach ($tables as $table) {
-                    $this->comment("Generating CRUD for $table->Tables_in_crud table");
+                    $this->comment("Generating " . $table->Tables_in_crud . " CRUD");
                     $columns = Schema::getColumnListing($table->Tables_in_crud);
                     $table = $table->Tables_in_crud;
                     $name = ucwords(str_singular($table));
@@ -75,7 +75,7 @@ class ApiCrudGenerator extends Command
 
                 }
             } catch (QueryException $exception) {
-                return $exception;
+                $this->error("Error: " . $exception->getMessage());
             }
         } else {
             $name = ucwords($name);
