@@ -18,7 +18,8 @@ class ApiCrudGenerator extends Command
     protected $signature = 'make:crud
     {name : Class (singular) for example User}
     {--table=default : Table name (plural) for example users | Default is generated-plural}
-    {--timestamps=false : Table name (plural) for example users | Default is generated-plural}';
+    {--timestamps=false : Set default timestamps}
+    {--test=true : Creating test (only when using all db)}';
 
 
     /**
@@ -57,17 +58,19 @@ class ApiCrudGenerator extends Command
                 foreach ($tables as $table) {
                     $columns = Schema::getColumnListing($table->Tables_in_crud);
                     $table = $table->Tables_in_crud;
-                    $name = str_singular($table);
+                    $name = ucwords(str_singular($table));
                     in_array('created_at', $columns) ? $timestamps = true : $timestamps = false;
                     $this->controller($name);
                     $this->model($name, $table, $timestamps);
                     $this->request($name);
                     $this->routes($name, $table);
+
                 }
             } catch (QueryException $exception) {
                 return $exception;
             }
         } else {
+            $name = ucwords($name);
             $table = $this->option('table');
             $timestamps = $this->option('timestamps');
             $this->controller($name);
@@ -97,8 +100,7 @@ class ApiCrudGenerator extends Command
      * @param $table string name of DB table
      * @param $timestamps boolean set timestamps true | false
      */
-    protected
-    function model($name, $table, $timestamps)
+    protected function model($name, $table, $timestamps)
     {
         $table === "default" ? $table = strtolower(str_plural($name)) : null;
         $timeDeclaration = 'public $timestamps = false;';
@@ -129,8 +131,7 @@ class ApiCrudGenerator extends Command
      * Create controller from controller.stub
      * @param $name
      */
-    protected
-    function controller($name)
+    protected function controller($name)
     {
         $controllerTemplate = str_replace(
             [
@@ -153,8 +154,7 @@ class ApiCrudGenerator extends Command
      * Generate Request from request.stub
      * @param $name
      */
-    protected
-    function request($name)
+    protected function request($name)
     {
         $requestTemplate = str_replace(
             ['{{modelName}}'],
@@ -172,8 +172,7 @@ class ApiCrudGenerator extends Command
      * Generate routes
      * @param $name
      */
-    public
-    function routes($name, $table)
+    protected function routes($name, $table)
     {
         $table === "default" ? $table = strtolower(str_plural($name)) : null;
         $requestTemplate = str_replace(
@@ -190,5 +189,31 @@ class ApiCrudGenerator extends Command
             $this->getStub('Routes')
         );
         File::append(base_path('routes/api.php'), $requestTemplate);
+    }
+
+
+    protected function test($name, $table){
+
+        $testTemplate = str_replace(
+            [
+                '{{modelName}}',
+                '{{modelNamePluralLowerCase}}',
+                '{{modelNameSingularLowerCase}}',
+            ],
+            [
+                $name,
+                $table,
+                strtolower($name)
+            ],
+            $this->getStub('Test')
+        );
+    }
+
+    /**
+     * @param $table
+     * @param $columns
+     */
+    protected function formatColumns($table, $columns){
+
     }
 }

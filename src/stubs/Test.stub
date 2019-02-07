@@ -1,0 +1,47 @@
+<?php
+namespace Tests\Unit;
+use Tests\TestCase;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use App\Model\{{modelName}};
+
+class {{modelName}}Test extends TestCase
+{
+   public function testAll()
+       {
+            $this->json('GET', 'api/{{modelNamePluralLowerCase}}')->assertStatus(200);
+       }
+
+       public function testFind()
+       {
+           ${{modelNameSingularLowerCase}} = {{modelName}}::all()->first();
+           $nextID = ${{modelNameSingularLowerCase}}->id - 1;
+
+           $this->json('GET', 'api/{{modelNameSingularLowerCase}}/${{modelNameSingularLowerCase}}->id')
+                ->assertStatus(200);
+
+           $this->json('GET', 'api/{{modelNameSingularLowerCase}}/$nextID')
+                           ->assertStatus(404);
+       }
+
+
+        public function testPut(){
+            // You must implement test with validators
+        }
+
+
+        public function testPatch(){
+            // You must implement test with validators
+        }
+
+        public function testDelete(){
+
+            ${{modelNameSingularLowerCase}} = {{modelName}}::all()->first();
+            $nextID = ${{modelNameSingularLowerCase}}->id - 1;
+            $this->json('DELETE', 'api/{{modelNameSingularLowerCase}}/${{modelNameSingularLowerCase}}->id')
+                 ->assertStatus(204);
+
+            $this->json('DELETE', 'api/{{modelNameSingularLowerCase}}/$nextID')
+                 ->assertStatus(504);
+        }
+
+}
