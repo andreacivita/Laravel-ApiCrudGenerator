@@ -75,7 +75,7 @@ class ApiCrudGenerator extends Command
             $this->request($name);
             $this->routes($name, $table);
         }
-
+        $this->info("Crud has been generated");
         return 0;
     }
 
