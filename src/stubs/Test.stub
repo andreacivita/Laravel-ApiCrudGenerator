@@ -16,7 +16,7 @@ class {{modelName}}Test extends TestCase
            ${{modelNameSingularLowerCase}} = {{modelName}}::all()->first();
            $nextID = ${{modelNameSingularLowerCase}}->id - 1;
 
-           $this->json('GET', 'api/{{modelNameSingularLowerCase}}/${{modelNameSingularLowerCase}}->id')
+           $this->json('GET', 'api/{{modelNameSingularLowerCase}}/'.${{modelNameSingularLowerCase}}->id)
                 ->assertStatus(200);
 
            $this->json('GET', 'api/{{modelNameSingularLowerCase}}/$nextID')
@@ -41,7 +41,7 @@ class {{modelName}}Test extends TestCase
 
             ${{modelNameSingularLowerCase}} = {{modelName}}::all()->first();
             $nextID = ${{modelNameSingularLowerCase}}->id - 1;
-            $this->json('DELETE', 'api/{{modelNameSingularLowerCase}}/${{modelNameSingularLowerCase}}->id')
+            $this->json('DELETE', 'api/{{modelNameSingularLowerCase}}/'.${{modelNameSingularLowerCase}}->id)
                  ->assertStatus(204);
 
             $this->json('DELETE', 'api/{{modelNameSingularLowerCase}}/$nextID')
