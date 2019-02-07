@@ -210,6 +210,5 @@ class ApiCrudGenerator extends Command
             $this->getStub('Test')
         );
         File::append(base_path("tests/Unit/{$name}Test.php"), $testTemplate);
-    );
     }
 }
