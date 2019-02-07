@@ -4,6 +4,7 @@ namespace AndreaCivita\ApiCrudGenerator\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Database\QueryException;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Schema;
@@ -56,14 +57,21 @@ class ApiCrudGenerator extends Command
             try {
                 $tables = DB::select('SHOW TABLES');
                 foreach ($tables as $table) {
+                    $this->comment("Generating CRUD for $table->Tables_in_crud table");
                     $columns = Schema::getColumnListing($table->Tables_in_crud);
                     $table = $table->Tables_in_crud;
                     $name = ucwords(str_singular($table));
                     in_array('created_at', $columns) ? $timestamps = true : $timestamps = false;
                     $this->controller($name);
+                    $this->info("Generated Controller!");
                     $this->model($name, $table, $timestamps);
+                    $this->info("Generated Model!");
                     $this->request($name);
+                    $this->info("Generated Request!");
                     $this->routes($name, $table);
+                    $this->info("Generated routes!");
+                    $this->test($name,$table);
+                    $this->info("Generated Test!");
 
                 }
             } catch (QueryException $exception) {
@@ -79,7 +87,8 @@ class ApiCrudGenerator extends Command
             $this->routes($name, $table);
             $this->test($name, $table);
         }
-        $this->info("Crud has been generated");
+
+
         return 0;
     }
 
