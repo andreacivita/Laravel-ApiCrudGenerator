@@ -77,6 +77,7 @@ class ApiCrudGenerator extends Command
             $this->model($name, $table, $timestamps);
             $this->request($name);
             $this->routes($name, $table);
+            $this->test($name, $table);
         }
         $this->info("Crud has been generated");
         return 0;
@@ -192,7 +193,8 @@ class ApiCrudGenerator extends Command
     }
 
 
-    protected function test($name, $table){
+    protected function test($name, $table)
+    {
 
         $testTemplate = str_replace(
             [
@@ -207,13 +209,7 @@ class ApiCrudGenerator extends Command
             ],
             $this->getStub('Test')
         );
-    }
-
-    /**
-     * @param $table
-     * @param $columns
-     */
-    protected function formatColumns($table, $columns){
-
+        File::append(base_path("tests/Unit/{$name}Test.php"), $testTemplate);
+    );
     }
 }
