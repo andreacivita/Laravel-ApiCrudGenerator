@@ -8,7 +8,7 @@ class {{modelName}}Test extends TestCase
 {
    public function testAll()
        {
-            $this->json('GET', 'api/{{modelNamePluralLowerCase}}')->assertStatus(200);
+            $this->json("GET", "api/{{modelNamePluralLowerCase}}")->assertStatus(200);
        }
 
        public function testFind()
@@ -16,24 +16,24 @@ class {{modelName}}Test extends TestCase
            ${{modelNameSingularLowerCase}} = {{modelName}}::all()->first();
            $nextID = ${{modelNameSingularLowerCase}}->id - 1;
 
-           $this->json('GET', 'api/{{modelNameSingularLowerCase}}/'.${{modelNameSingularLowerCase}}->id)
+           $this->json("GET", "api/{{modelNameSingularLowerCase}}/".${{modelNameSingularLowerCase}}->id)
                 ->assertStatus(200);
 
-           $this->json('GET', 'api/{{modelNameSingularLowerCase}}/$nextID')
+           $this->json("GET", "api/{{modelNameSingularLowerCase}}/$nextID")
                            ->assertStatus(404);
        }
 
 
         public function testPut(){
             // You must implement test with validators
-            // Now it's filled with simple assertion
+            // Now it"s filled with simple assertion
                         $this->assertTrue(true);
         }
 
 
         public function testPatch(){
             // You must implement test with validators
-            // Now it's filled with simple assertion
+            // Now it"s filled with simple assertion
             $this->assertTrue(true);
         }
 
@@ -41,10 +41,10 @@ class {{modelName}}Test extends TestCase
 
             ${{modelNameSingularLowerCase}} = {{modelName}}::all()->first();
             $nextID = ${{modelNameSingularLowerCase}}->id - 1;
-            $this->json('DELETE', 'api/{{modelNameSingularLowerCase}}/'.${{modelNameSingularLowerCase}}->id)
+            $this->json("DELETE", "api/{{modelNameSingularLowerCase}}/".${{modelNameSingularLowerCase}}->id)
                  ->assertStatus(204);
 
-            $this->json('DELETE', 'api/{{modelNameSingularLowerCase}}/$nextID')
+            $this->json("DELETE", "api/{{modelNameSingularLowerCase}}/$nextID")
                  ->assertStatus(504);
         }
 
