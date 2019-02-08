@@ -25,16 +25,16 @@ class {{modelName}}Test extends TestCase
 
 
         public function testPut(){
-            // You must implement test with validators
-            // Now it"s filled with simple assertion
-                        $this->assertTrue(true);
+           ${{modelNameSingularLowerCase}} = {{modelName}}::all()->first()->toArray();
+             $this->json("PUT", "api/{{modelNameSingularLowerCase}}/", ${{modelNameSingularLowerCase}})
+                           ->assertStatus(201);
         }
 
 
         public function testPatch(){
-            // You must implement test with validators
-            // Now it"s filled with simple assertion
-            $this->assertTrue(true);
+             ${{modelNameSingularLowerCase}} = {{modelName}}::all()->first()->toArray();
+                         $this->json("PATCH", "api/{{modelNameSingularLowerCase}}/".${{modelNameSingularLowerCase}}['id'], ${{modelNameSingularLowerCase}})
+                                       ->assertStatus(200);
         }
 
         public function testDelete(){
