@@ -20,7 +20,8 @@ class ApiCrudGenerator extends Command
     {name=name : Class (singular) for example User}
     {--table=default : Table name (plural) for example users | Default is generated-plural}
     {--timestamps=false : Set default timestamps}
-    {--interactive=false : Interactive mode}';
+    {--interactive=false : Interactive mode}
+    {--all=false : Interactive mode}';
 
 
     /**
@@ -47,39 +48,23 @@ class ApiCrudGenerator extends Command
      */
     public function handle()
     {
-
+        // Checking interactive mode
         if ($this->option('interactive') == "") {
             $this->interactive();
             return 0;
         }
 
-        $name = $this->argument('name');
-
-        //if $name === 'all' then generate crud for all tables.
-
-        if (strtolower($name) === "all") {
-            //Get all tables from db
-            try {
-                $tables = DB::select('SHOW TABLES');
-                foreach ($tables as $table) {
-                    $this->comment("Generating " . $table->Tables_in_crud . " CRUD");
-                    $columns = Schema::getColumnListing($table->Tables_in_crud);
-                    $table = $table->Tables_in_crud;
-                    $name = ucwords(str_singular($table));
-                    in_array('created_at', $columns) ? $timestamps = true : $timestamps = false;
-                    $this->generate($name, $table, $timestamps);
-                }
-            } catch (QueryException $exception) {
-                $this->error("Error: " . $exception->getMessage());
-            }
-        } else {
-            $name = ucwords($name);
-            $table = $this->option('table');
-            $timestamps = $this->option('timestamps');
-            $this->generate($name, $table, $timestamps);
+        // Checkig all mode
+        if ($this->option('all') == "") {
+            $this->all();
+            return 0;
         }
 
-
+        // If here, no interactive || all selected
+        $name = ucwords($this->argument('name'));
+        $table = $this->option('table');
+        $timestamps = $this->option('timestamps');
+        $this->generate($name, $table, $timestamps);
         return 0;
     }
 
@@ -265,5 +250,26 @@ class ApiCrudGenerator extends Command
         $this->info("Generated routes!");
         $this->test($name, $table);
         $this->info("Generated Test!");
+    }
+
+
+    /**
+     * Handle all-db generation
+     */
+    protected function all()
+    {
+        try {
+            $tables = DB::select('SHOW TABLES');
+            foreach ($tables as $table) {
+                $this->comment("Generating " . $table->Tables_in_crud . " CRUD");
+                $columns = Schema::getColumnListing($table->Tables_in_crud);
+                $table = $table->Tables_in_crud;
+                $name = ucwords(str_singular($table));
+                in_array('created_at', $columns) ? $timestamps = true : $timestamps = false;
+                $this->generate($name, $table, $timestamps);
+            }
+        } catch (QueryException $exception) {
+            $this->error("Error: " . $exception->getMessage());
+        }
     }
 }
