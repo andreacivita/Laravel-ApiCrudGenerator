@@ -32,10 +32,24 @@ First, let's supposing I want to generate CRUD for all table in my db.
 So, we run
 
 ```sh
-php artisan make:crud All
+php artisan make:crud --all
 ```
 
 No further options required. Your setup is complete!
+
+
+### Interactive mode
+
+You can manage a single table with interactive mode or manually (see below).
+
+Just run
+
+```sh
+php artisan make:crud --interactive
+```
+
+Crud generator will ask you several data (Name of resource, Table name and use of timestamps).
+
 
 ### Managing a single db table
 
