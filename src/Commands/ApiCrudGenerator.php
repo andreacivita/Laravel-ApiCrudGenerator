@@ -17,10 +17,10 @@ class ApiCrudGenerator extends Command
      * @var string
      */
     protected $signature = 'make:crud
-    {name : Class (singular) for example User}
+    {name=name : Class (singular) for example User}
     {--table=default : Table name (plural) for example users | Default is generated-plural}
     {--timestamps=false : Set default timestamps}
-    {--test=true : Creating test (only when using all db)}';
+    {--interactive=false : Interactive mode}';
 
 
     /**
@@ -48,6 +48,11 @@ class ApiCrudGenerator extends Command
     public function handle()
     {
 
+        if ($this->option('interactive') == "") {
+            $this->interactive();
+            return 0;
+        }
+
         $name = $this->argument('name');
 
         //if $name === 'all' then generate crud for all tables.
@@ -62,17 +67,7 @@ class ApiCrudGenerator extends Command
                     $table = $table->Tables_in_crud;
                     $name = ucwords(str_singular($table));
                     in_array('created_at', $columns) ? $timestamps = true : $timestamps = false;
-                    $this->controller($name);
-                    $this->info("Generated Controller!");
-                    $this->model($name, $table, $timestamps);
-                    $this->info("Generated Model!");
-                    $this->request($name);
-                    $this->info("Generated Request!");
-                    $this->routes($name, $table);
-                    $this->info("Generated routes!");
-                    $this->test($name,$table);
-                    $this->info("Generated Test!");
-
+                    $this->generate($name, $table, $timestamps);
                 }
             } catch (QueryException $exception) {
                 $this->error("Error: " . $exception->getMessage());
@@ -81,11 +76,7 @@ class ApiCrudGenerator extends Command
             $name = ucwords($name);
             $table = $this->option('table');
             $timestamps = $this->option('timestamps');
-            $this->controller($name);
-            $this->model($name, $table, $timestamps);
-            $this->request($name);
-            $this->routes($name, $table);
-            $this->test($name, $table);
+            $this->generate($name, $table, $timestamps);
         }
 
 
@@ -97,8 +88,7 @@ class ApiCrudGenerator extends Command
      * @param $type
      * @return bool|string
      */
-    protected
-    function getStub($type)
+    protected function getStub($type)
     {
         return file_get_contents(resource_path("stubs/$type.stub"));
     }
@@ -201,7 +191,11 @@ class ApiCrudGenerator extends Command
         File::append(base_path('routes/api.php'), $requestTemplate);
     }
 
-
+    /**
+     * Generate unit test
+     * @param $name
+     * @param $table
+     */
     protected function test($name, $table)
     {
 
@@ -219,5 +213,57 @@ class ApiCrudGenerator extends Command
             $this->getStub('Test')
         );
         File::append(base_path("tests/Unit/{$name}Test.php"), $testTemplate);
+    }
+
+    /**
+     * Generate CRUD in interactive mode
+     */
+    protected function interactive()
+    {
+        $this->info("Welcome in Interactive mode");
+
+        $this->comment("This command will guide you through creating your CRUD");
+        $name = $this->ask('What is name of your Model?');
+        $name = ucwords($name);
+        $table = $this->ask("Table name [" . strtolower(str_plural($name)) . "]:");
+        if ($table == "")
+            $table = str_plural($name);
+        $table = strtolower($table);
+        $choice = $this->choice('Do your table has timestamps column?', ['No', 'Yes'], 0);
+        $choice === "Yes" ? $timestamps = true : $timestamps = false;
+        $this->info("Please confim this data");
+        $this->line("Name: $name");
+        $this->line("Table: $table");
+        $this->line("Timestamps:  $choice");
+
+        $confirm = $this->ask("Press y to confirm, type N to restart");
+        if ($confirm == "y") {
+            $this->generate($name, $table, $timestamps);
+            die;
+        }
+        $this->error("Aborted!");
+
+
+    }
+
+
+    /**
+     * Handle data generation
+     * @param $name string Model Name
+     * @param $table string Table Name
+     * @param $timestamps boolean
+     */
+    protected function generate($name, $table, $timestamps)
+    {
+        $this->controller($name);
+        $this->info("Generated Controller!");
+        $this->model($name, $table, $timestamps);
+        $this->info("Generated Model!");
+        $this->request($name);
+        $this->info("Generated Request!");
+        $this->routes($name, $table);
+        $this->info("Generated routes!");
+        $this->test($name, $table);
+        $this->info("Generated Test!");
     }
 }
