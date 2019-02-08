@@ -4,6 +4,7 @@ namespace AndreaCivita\ApiCrudGenerator\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Database\QueryException;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Schema;
@@ -18,7 +19,8 @@ class ApiCrudGenerator extends Command
     protected $signature = 'make:crud
     {name : Class (singular) for example User}
     {--table=default : Table name (plural) for example users | Default is generated-plural}
-    {--timestamps=false : Table name (plural) for example users | Default is generated-plural}';
+    {--timestamps=false : Set default timestamps}
+    {--test=true : Creating test (only when using all db)}';
 
 
     /**
@@ -55,27 +57,38 @@ class ApiCrudGenerator extends Command
             try {
                 $tables = DB::select('SHOW TABLES');
                 foreach ($tables as $table) {
+                    $this->comment("Generating " . $table->Tables_in_crud . " CRUD");
                     $columns = Schema::getColumnListing($table->Tables_in_crud);
                     $table = $table->Tables_in_crud;
-                    $name = str_singular($table);
+                    $name = ucwords(str_singular($table));
                     in_array('created_at', $columns) ? $timestamps = true : $timestamps = false;
                     $this->controller($name);
+                    $this->info("Generated Controller!");
                     $this->model($name, $table, $timestamps);
+                    $this->info("Generated Model!");
                     $this->request($name);
+                    $this->info("Generated Request!");
                     $this->routes($name, $table);
+                    $this->info("Generated routes!");
+                    $this->test($name,$table);
+                    $this->info("Generated Test!");
+
                 }
             } catch (QueryException $exception) {
-                return $exception;
+                $this->error("Error: " . $exception->getMessage());
             }
         } else {
+            $name = ucwords($name);
             $table = $this->option('table');
             $timestamps = $this->option('timestamps');
             $this->controller($name);
             $this->model($name, $table, $timestamps);
             $this->request($name);
             $this->routes($name, $table);
+            $this->test($name, $table);
         }
-        $this->info("Crud has been generated");
+
+
         return 0;
     }
 
@@ -97,8 +110,7 @@ class ApiCrudGenerator extends Command
      * @param $table string name of DB table
      * @param $timestamps boolean set timestamps true | false
      */
-    protected
-    function model($name, $table, $timestamps)
+    protected function model($name, $table, $timestamps)
     {
         $table === "default" ? $table = strtolower(str_plural($name)) : null;
         $timeDeclaration = 'public $timestamps = false;';
@@ -129,8 +141,7 @@ class ApiCrudGenerator extends Command
      * Create controller from controller.stub
      * @param $name
      */
-    protected
-    function controller($name)
+    protected function controller($name)
     {
         $controllerTemplate = str_replace(
             [
@@ -153,8 +164,7 @@ class ApiCrudGenerator extends Command
      * Generate Request from request.stub
      * @param $name
      */
-    protected
-    function request($name)
+    protected function request($name)
     {
         $requestTemplate = str_replace(
             ['{{modelName}}'],
@@ -172,8 +182,7 @@ class ApiCrudGenerator extends Command
      * Generate routes
      * @param $name
      */
-    public
-    function routes($name, $table)
+    protected function routes($name, $table)
     {
         $table === "default" ? $table = strtolower(str_plural($name)) : null;
         $requestTemplate = str_replace(
@@ -190,5 +199,25 @@ class ApiCrudGenerator extends Command
             $this->getStub('Routes')
         );
         File::append(base_path('routes/api.php'), $requestTemplate);
+    }
+
+
+    protected function test($name, $table)
+    {
+
+        $testTemplate = str_replace(
+            [
+                '{{modelName}}',
+                '{{modelNamePluralLowerCase}}',
+                '{{modelNameSingularLowerCase}}',
+            ],
+            [
+                $name,
+                $table,
+                strtolower($name)
+            ],
+            $this->getStub('Test')
+        );
+        File::append(base_path("tests/Unit/{$name}Test.php"), $testTemplate);
     }
 }
