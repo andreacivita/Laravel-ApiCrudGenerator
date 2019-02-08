@@ -1,6 +1,6 @@
 # Laravel | API CRUD Generator
 
-This Generator package provides generators of Models, Controllers, Request & Routes for a painless development. 
+This Generator package provides generators of Models, Controllers, Request, Routes & Tests for a painless development. 
 
 ## INSTALL
 
@@ -83,6 +83,11 @@ Example: i'm generating Car crud
 | car/{id}      | DELETE           | Delete car by id |
 
 Remember that all api routes have 'api/' prefix.
+
+## TESTING
+
+When created CRUD structure (Controllers, Models, Request & Routes), this package generate Unit test file. <br>
+**IMPORTANT** : Testing insert and update functions are not yet implemented.
 
 ## CONTRIBUTING
 
