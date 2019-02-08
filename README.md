@@ -1,6 +1,6 @@
 # Laravel | API CRUD Generator
 
-This Generator package provides generators of Models, Controllers, Request & Routes for a painless development. 
+This Generator package provides generators of Models, Controllers, Request, Routes & Tests for a painless development. 
 
 ## INSTALL
 
@@ -32,10 +32,24 @@ First, let's supposing I want to generate CRUD for all table in my db.
 So, we run
 
 ```sh
-php artisan make:crud All
+php artisan make:crud --all
 ```
 
 No further options required. Your setup is complete!
+
+
+### Interactive mode
+
+You can manage a single table with interactive mode or manually (see below).
+
+Just run
+
+```sh
+php artisan make:crud --interactive
+```
+
+Crud generator will ask you several data (Name of resource, Table name and use of timestamps).
+
 
 ### Managing a single db table
 
@@ -83,6 +97,11 @@ Example: i'm generating Car crud
 | car/{id}      | DELETE           | Delete car by id |
 
 Remember that all api routes have 'api/' prefix.
+
+## TESTING
+
+When created CRUD structure (Controllers, Models, Request & Routes), this package generate Unit test file. <br>
+**IMPORTANT** : Testing insert and update functions are not yet implemented.
 
 ## CONTRIBUTING
 
