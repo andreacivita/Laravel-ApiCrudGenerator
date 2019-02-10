@@ -44,7 +44,7 @@ No further options required. Your setup is complete!
 
 ### Interactive mode
 
-You can manage a single table with interactive mode or manually (see below).
+You can manage a single table with interactive mode or manually (see [next paragraph](https://github.com/andreacivita/Laravel-ApiCrudGenerator#managing-a-single-db-table).
 
 Just run
 
@@ -109,12 +109,11 @@ When created CRUD structure (Controllers, Models, Request & Routes), this packag
 
 ## CONTRIBUTING
 
-This package is covered by LGPL license. You are able to do whatever you want with this code.
+This package is covered by MIT license. You are able to do whatever you want with this code.
 
 Please feel free to fork this package and contribute by submitting a pull request to enhance the functionalities.
 You can see issues or enhancement and assign task for contributing :)
 
-**Remember that all modifications must be under the same license (or GNU GPLv3).**
 
 ## How can I thank you?
 
