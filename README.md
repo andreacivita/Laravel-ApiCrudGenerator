@@ -44,7 +44,7 @@ No further options required. Your setup is complete!
 
 ### Interactive mode
 
-You can manage a single table with interactive mode or manually (see [next paragraph](https://github.com/andreacivita/Laravel-ApiCrudGenerator#managing-a-single-db-table).
+You can manage a single table with interactive mode or manually (see [next paragraph](https://github.com/andreacivita/Laravel-ApiCrudGenerator#managing-a-single-db-table)).
 
 Just run
 
