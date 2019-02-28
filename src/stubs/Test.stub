@@ -1,51 +1,51 @@
 <?php
-namespace Tests\Unit;
+
+namespace Tests\Feature;
+
 use Tests\TestCase;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Model\{{modelName}};
 
 class {{modelName}}Test extends TestCase
 {
-   public function testAll()
-       {
-            $this->json("GET", "api/{{modelNamePluralLowerCase}}")->assertStatus(200);
-       }
+     public function testAll()
+     {
+          $this->json("GET", "api/{{modelNamePluralLowerCase}}")->assertStatus(200);
+     }
 
-       public function testFind()
-       {
-           ${{modelNameSingularLowerCase}} = {{modelName}}::all()->first();
-           $nextID = ${{modelNameSingularLowerCase}}->id - 1;
+     public function testFind()
+     {
+          ${{modelNameSingularLowerCase}} = {{modelName}}::all()->first();
+          $nextID = ${{modelNameSingularLowerCase}}->id - 1;
 
-           $this->json("GET", "api/{{modelNameSingularLowerCase}}/".${{modelNameSingularLowerCase}}->id)
-                ->assertStatus(200);
+          $this->json("GET", "api/{{modelNameSingularLowerCase}}/".${{modelNameSingularLowerCase}}->id)
+               ->assertStatus(200);
 
-           $this->json("GET", "api/{{modelNameSingularLowerCase}}/$nextID")
-                           ->assertStatus(404);
-       }
-
-
-        public function testPut(){
-           ${{modelNameSingularLowerCase}} = {{modelName}}::all()->first()->toArray();
-             $this->json("PUT", "api/{{modelNameSingularLowerCase}}/", ${{modelNameSingularLowerCase}})
-                           ->assertStatus(201);
-        }
+          $this->json("GET", "api/{{modelNameSingularLowerCase}}/$nextID")
+                         ->assertStatus(404);
+     }
 
 
-        public function testPatch(){
-             ${{modelNameSingularLowerCase}} = {{modelName}}::all()->first()->toArray();
-                         $this->json("PATCH", "api/{{modelNameSingularLowerCase}}/".${{modelNameSingularLowerCase}}['id'], ${{modelNameSingularLowerCase}})
-                                       ->assertStatus(200);
-        }
+     public function testPut(){
+          ${{modelNameSingularLowerCase}} = {{modelName}}::all()->first()->toArray();
+          $this->json("PUT", "api/{{modelNameSingularLowerCase}}/", ${{modelNameSingularLowerCase}})
+                         ->assertStatus(201);
+     }
 
-        public function testDelete(){
 
-            ${{modelNameSingularLowerCase}} = {{modelName}}::all()->first();
-            $nextID = ${{modelNameSingularLowerCase}}->id - 1;
-            $this->json("DELETE", "api/{{modelNameSingularLowerCase}}/".${{modelNameSingularLowerCase}}->id)
-                 ->assertStatus(204);
+     public function testPatch(){
+          ${{modelNameSingularLowerCase}} = {{modelName}}::all()->first()->toArray();
+                    $this->json("PATCH", "api/{{modelNameSingularLowerCase}}/".${{modelNameSingularLowerCase}}['id'], ${{modelNameSingularLowerCase}})
+                                   ->assertStatus(200);
+     }
 
-            $this->json("DELETE", "api/{{modelNameSingularLowerCase}}/$nextID")
-                 ->assertStatus(504);
-        }
+     public function testDelete(){
 
+          ${{modelNameSingularLowerCase}} = {{modelName}}::all()->first();
+          $nextID = ${{modelNameSingularLowerCase}}->id - 1;
+          $this->json("DELETE", "api/{{modelNameSingularLowerCase}}/".${{modelNameSingularLowerCase}}->id)
+               ->assertStatus(204);
+
+          $this->json("DELETE", "api/{{modelNameSingularLowerCase}}/$nextID")
+               ->assertStatus(504);
+     }
 }
