@@ -67,8 +67,7 @@ class {{modelName}}Test extends TestCase
      */
     public function testUpdate()
     {
-        $this->actingAs($this->employee)
-            ->patchJson('/api/{{modelNameSingularLowerCase}}/'.$this->{{modelNameSingularLowerCase}}->id, $this->{{modelNameSingularLowerCase}}->toArray())
+        $this->patchJson('/api/{{modelNameSingularLowerCase}}/'.$this->{{modelNameSingularLowerCase}}->id, $this->{{modelNameSingularLowerCase}}->toArray())
             ->assertSuccessful();
     }
 
