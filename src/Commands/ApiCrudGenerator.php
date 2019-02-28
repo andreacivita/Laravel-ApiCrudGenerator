@@ -183,10 +183,10 @@ class ApiCrudGenerator extends Command
             $this->getStub('Factory')
         );
 
-        if (!file_exists($path = app_path('/database/factories')))
+        if (!file_exists($path = base_path('/database/factories')))
             mkdir($path, 0777, true);
 
-        file_put_contents(app_path("/database/factories/{$name}Factory.php"), $factoryTemplate);
+        file_put_contents(base_path("database/factories/{$name}Factory.php"), $factoryTemplate);
     }
 
     /**
