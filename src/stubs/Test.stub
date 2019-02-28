@@ -7,45 +7,81 @@ use App\Model\{{modelName}};
 
 class {{modelName}}Test extends TestCase
 {
-     public function testAll()
-     {
-          $this->json("GET", "api/{{modelNamePluralLowerCase}}")->assertStatus(200);
-     }
+    /** @var \App\Models\{{modelName}} */
+    protected ${{modelNameSingularLowerCase}};
 
-     public function testFind()
-     {
-          ${{modelNameSingularLowerCase}} = {{modelName}}::all()->first();
-          $nextID = ${{modelNameSingularLowerCase}}->id - 1;
+    /**
+     * Set up test case
+     *
+     * @return void
+     */
+    public function setUp()
+    {
+        parent::setUp();
 
-          $this->json("GET", "api/{{modelNameSingularLowerCase}}/".${{modelNameSingularLowerCase}}->id)
-               ->assertStatus(200);
+        $this->{{modelNameSingularLowerCase}} = factory(\App\Models\{{modelName}}::class)->create();
 
-          $this->json("GET", "api/{{modelNameSingularLowerCase}}/$nextID")
-                         ->assertStatus(404);
-     }
+        factory(\App\Models\{{modelName}}::class, 5)->create();
+    }
 
+    /**
+     * List all {{modelNamePluralLowerCase}}
+     *
+     * @return void
+     */
+    public function testIndex()
+    {
+        $this->getJson('/api/{{modelNameSingularLowerCase}}')
+            ->assertSuccessful();
+    }
+    
+    /**
+     * Show {{modelNameSingularLowerCase}}
+     *
+     * @return void
+     */
+    public function testShow()
+    {
+        $this->getJson('/api/{{modelNameSingularLowerCase}}/'.$this->{{modelNameSingularLowerCase}}->id)
+            ->assertSuccessful();
 
-     public function testPut(){
-          ${{modelNameSingularLowerCase}} = {{modelName}}::all()->first()->toArray();
-          $this->json("PUT", "api/{{modelNameSingularLowerCase}}/", ${{modelNameSingularLowerCase}})
-                         ->assertStatus(201);
-     }
+        $this->getJson('/api/{{modelNameSingularLowerCase}}/9'.$this->{{modelNameSingularLowerCase}}->id)
+            ->assertNotFound();
+    }
 
+    /**
+     * Create new {{modelNameSingularLowerCase}}
+     *
+     * @return void
+     */
+    public function testStore()
+    {
+        $this->postJson('/api/{{modelNameSingularLowerCase}}', $this->{{modelNameSingularLowerCase}}->toArray())
+            ->assertSuccessful();
+    }
 
-     public function testPatch(){
-          ${{modelNameSingularLowerCase}} = {{modelName}}::all()->first()->toArray();
-                    $this->json("PATCH", "api/{{modelNameSingularLowerCase}}/".${{modelNameSingularLowerCase}}['id'], ${{modelNameSingularLowerCase}})
-                                   ->assertStatus(200);
-     }
+    /**
+     * Edit {{modelNameSingularLowerCase}}
+     *
+     * @return void
+     */
+    public function testUpdate()
+    {
+        $this->actingAs($this->employee)
+            ->patchJson('/api/{{modelNameSingularLowerCase}}/'.$this->{{modelNameSingularLowerCase}}->id, $this->{{modelNameSingularLowerCase}}->toArray())
+            ->assertSuccessful();
+    }
 
-     public function testDelete(){
+    /**
+     * Delete {{modelNameSingularLowerCase}}
+     *
+     * @return void
+     */
+    public function testDestroy()
+    {
+        ${{modelNameSingularLowerCase}} = factory(\App\Models\{{modelName}}::class)->create();
 
-          ${{modelNameSingularLowerCase}} = {{modelName}}::all()->first();
-          $nextID = ${{modelNameSingularLowerCase}}->id - 1;
-          $this->json("DELETE", "api/{{modelNameSingularLowerCase}}/".${{modelNameSingularLowerCase}}->id)
-               ->assertStatus(204);
-
-          $this->json("DELETE", "api/{{modelNameSingularLowerCase}}/$nextID")
-               ->assertStatus(504);
-     }
+        $this->deleteJson('/api/{{modelNameSingularLowerCase}}/'.${{modelNameSingularLowerCase}}->id)
+            ->assertSuccessful();
+    }
 }
