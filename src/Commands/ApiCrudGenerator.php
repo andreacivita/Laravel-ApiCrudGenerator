@@ -265,7 +265,7 @@ class ApiCrudGenerator extends Command
         $this->request($name);
         $this->info("Generated Request!");
         $this->resource($name);
-        $this->info("Generated Request!");
+        $this->info("Generated Resource!");
         $this->routes($name, $table);
         $this->info("Generated routes!");
         $this->test($name, $table);
