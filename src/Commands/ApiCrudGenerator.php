@@ -172,6 +172,24 @@ class ApiCrudGenerator extends Command
     }
 
     /**
+     * Generate factory from Factory.stub
+     * @param $name
+     */
+    protected function factory($name)
+    {
+        $factoryTemplate = str_replace(
+            ['{{modelName}}'],
+            [$name],
+            $this->getStub('Factory')
+        );
+
+        if (!file_exists($path = app_path('/database/factories')))
+            mkdir($path, 0777, true);
+
+        file_put_contents(app_path("/database/factories/{$name}Factory.php"), $factoryTemplate);
+    }
+
+    /**
      * Generate routes
      * @param $name
      */
@@ -268,6 +286,8 @@ class ApiCrudGenerator extends Command
         $this->info("Generated Resource!");
         $this->routes($name, $table);
         $this->info("Generated routes!");
+        $this->factory($name, $table);
+        $this->info("Generated Factory!");
         $this->test($name, $table);
         $this->info("Generated Test!");
     }
