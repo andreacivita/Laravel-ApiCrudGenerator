@@ -154,6 +154,24 @@ class ApiCrudGenerator extends Command
     }
 
     /**
+     * Generate Resource from Resource.stub
+     * @param $name
+     */
+    protected function resource($name)
+    {
+        $requestTemplate = str_replace(
+            ['{{modelName}}'],
+            [$name],
+            $this->getStub('Resource')
+        );
+
+        if (!file_exists($path = app_path('/Http/Resources')))
+            mkdir($path, 0777, true);
+
+        file_put_contents(app_path("/Http/Resources/{$name}Resource.php"), $requestTemplate);
+    }
+
+    /**
      * Generate routes
      * @param $name
      */
@@ -245,6 +263,8 @@ class ApiCrudGenerator extends Command
         $this->model($name, $table, $timestamps);
         $this->info("Generated Model!");
         $this->request($name);
+        $this->info("Generated Request!");
+        $this->resource($name);
         $this->info("Generated Request!");
         $this->routes($name, $table);
         $this->info("Generated routes!");
