@@ -105,11 +105,11 @@ class ApiCrudGenerator extends Command
             $this->getStub('Model')
         );
 
-        if (!file_exists($path = app_path('/Model')))
+        if (!file_exists($path = app_path('/Models')))
             mkdir($path, 0777, true);
 
 
-        file_put_contents(app_path("Model/{$name}.php"), $modelTemplate);
+        file_put_contents(app_path("Models/{$name}.php"), $modelTemplate);
     }
 
     /**
