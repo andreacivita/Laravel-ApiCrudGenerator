@@ -159,7 +159,7 @@ class ApiCrudGenerator extends Command
      */
     protected function resource($name)
     {
-        $requestTemplate = str_replace(
+        $resourceTemplate = str_replace(
             ['{{modelName}}'],
             [$name],
             $this->getStub('Resource')
@@ -168,7 +168,7 @@ class ApiCrudGenerator extends Command
         if (!file_exists($path = app_path('/Http/Resources')))
             mkdir($path, 0777, true);
 
-        file_put_contents(app_path("/Http/Resources/{$name}Resource.php"), $requestTemplate);
+        file_put_contents(app_path("/Http/Resources/{$name}Resource.php"), $resourceTemplate);
     }
 
     /**
@@ -196,7 +196,7 @@ class ApiCrudGenerator extends Command
     protected function routes($name, $table)
     {
         $table === "default" ? $table = strtolower(str_plural($name)) : null;
-        $requestTemplate = str_replace(
+        $routeTemplate = str_replace(
             [
                 '{{modelName}}',
                 '{{modelNamePluralLowerCase}}',
@@ -209,7 +209,7 @@ class ApiCrudGenerator extends Command
             ],
             $this->getStub('Routes')
         );
-        File::append(base_path('routes/api.php'), $requestTemplate);
+        File::append(base_path('routes/api.php'), $routeTemplate);
     }
 
     /**
