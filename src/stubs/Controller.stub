@@ -2,43 +2,72 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\{{modelName}};
 use App\Http\Requests\{{modelName}}Request;
-use App\Model\{{modelName}};
+use App\Http\Resources\{{modelName}}Resource;
 
 class {{modelName}}Controller extends Controller
 {
-
-    public function all()
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index()
     {
-        return response()->json({{modelName}}::all(),200);
+        ${{modelNamePluralLowerCase}} = {{modelName}}::paginate();
+
+        return {{modelName}}Resource::collection(${{modelNamePluralLowerCase}});
     }
 
-    public function find($id)
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \App\Http\Requests\{{modelName}}Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store({{modelName}}Request $request)
     {
-       return response()->json({{modelName}}::findOrFail($id),200);
+        ${{modelNameSingularLowerCase}} = {{modelName}}::create($request->validated());
+
+        return new {{modelName}}Resource(${{modelNameSingularLowerCase}});
     }
 
-
-    public function put({{modelName}}Request $request)
+    /**
+     * Display the specified resource.
+     *
+     * @param  \App\Models\{{modelName}}  ${{modelNameSingularLowerCase}}
+     * @return \Illuminate\Http\Response
+     */
+    public function show({{modelName}} ${{modelNameSingularLowerCase}})
     {
-        ${{modelNameSingularLowerCase}} = {{modelName}}::create($request->all());
-
-        return response()->json(${{modelNameSingularLowerCase}}, 201);
+        return new {{modelName}}Resource(${{modelNameSingularLowerCase}});
     }
 
-
-    public function patch({{modelName}}Request $request, $id)
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \App\Http\Requests\{{modelName}}Request  $request
+     * @param  \App\Models\{{modelName}}  ${{modelNameSingularLowerCase}}
+     * @return \Illuminate\Http\Response
+     */
+    public function update({{modelName}}Request $request, {{modelName}} ${{modelNameSingularLowerCase}})
     {
-        ${{modelNameSingularLowerCase}} = {{modelName}}::findOrFail($id);
-        ${{modelNameSingularLowerCase}}->update($request->all());
+        ${{modelNameSingularLowerCase}}->update($request->validated());
 
-        return response()->json(${{modelNameSingularLowerCase}}, 200);
+        return new {{modelName}}Resource(${{modelNameSingularLowerCase}});
     }
 
-    public function delete($id)
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  \App\Models\{{modelName}}  ${{modelNameSingularLowerCase}}
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy({{modelName}} ${{modelNameSingularLowerCase}})
     {
-        if({{modelName}}::destroy($id))
-            return response()->json("DELETED", 204);
-        return response()->json("Errored", 504);
+        ${{modelNameSingularLowerCase}}->delete();
+
+        return response()->json("DELETED", 204);
     }
 }
