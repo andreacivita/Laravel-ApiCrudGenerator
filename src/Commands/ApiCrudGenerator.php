@@ -105,11 +105,11 @@ class ApiCrudGenerator extends Command
             $this->getStub('Model')
         );
 
-        if (!file_exists($path = app_path('/Models')))
+        if (!file_exists($path = app_path('/Model')))
             mkdir($path, 0777, true);
 
 
-        file_put_contents(app_path("Models/{$name}.php"), $modelTemplate);
+        file_put_contents(app_path("Model/{$name}.php"), $modelTemplate);
     }
 
     /**
@@ -154,49 +154,13 @@ class ApiCrudGenerator extends Command
     }
 
     /**
-     * Generate Resource from Resource.stub
-     * @param $name
-     */
-    protected function resource($name)
-    {
-        $resourceTemplate = str_replace(
-            ['{{modelName}}'],
-            [$name],
-            $this->getStub('Resource')
-        );
-
-        if (!file_exists($path = app_path('/Http/Resources')))
-            mkdir($path, 0777, true);
-
-        file_put_contents(app_path("/Http/Resources/{$name}Resource.php"), $resourceTemplate);
-    }
-
-    /**
-     * Generate factory from Factory.stub
-     * @param $name
-     */
-    protected function factory($name)
-    {
-        $factoryTemplate = str_replace(
-            ['{{modelName}}'],
-            [$name],
-            $this->getStub('Factory')
-        );
-
-        if (!file_exists($path = base_path('/database/factories')))
-            mkdir($path, 0777, true);
-
-        file_put_contents(base_path("database/factories/{$name}Factory.php"), $factoryTemplate);
-    }
-
-    /**
      * Generate routes
      * @param $name
      */
     protected function routes($name, $table)
     {
         $table === "default" ? $table = strtolower(str_plural($name)) : null;
-        $routeTemplate = str_replace(
+        $requestTemplate = str_replace(
             [
                 '{{modelName}}',
                 '{{modelNamePluralLowerCase}}',
@@ -209,7 +173,7 @@ class ApiCrudGenerator extends Command
             ],
             $this->getStub('Routes')
         );
-        File::append(base_path('routes/api.php'), $routeTemplate);
+        File::append(base_path('routes/api.php'), $requestTemplate);
     }
 
     /**
@@ -233,7 +197,7 @@ class ApiCrudGenerator extends Command
             ],
             $this->getStub('Test')
         );
-        file_put_contents(base_path("tests/Feature/{$name}Test.php"), $testTemplate);
+        File::append(base_path("tests/Unit/{$name}Test.php"), $testTemplate);
     }
 
     /**
@@ -282,12 +246,8 @@ class ApiCrudGenerator extends Command
         $this->info("Generated Model!");
         $this->request($name);
         $this->info("Generated Request!");
-        $this->resource($name);
-        $this->info("Generated Resource!");
         $this->routes($name, $table);
         $this->info("Generated routes!");
-        $this->factory($name, $table);
-        $this->info("Generated Factory!");
         $this->test($name, $table);
         $this->info("Generated Test!");
     }
