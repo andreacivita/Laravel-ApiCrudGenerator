@@ -2,8 +2,10 @@
 
 namespace AndreaCivita\ApiCrudGenerator\Commands;
 
+use Illuminate\Support\Str;
 use Illuminate\Console\Command;
 use Illuminate\Database\QueryException;
+use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
@@ -23,6 +25,12 @@ class ApiCrudGenerator extends Command
     {--interactive=false : Interactive mode}
     {--all=false : Interactive mode}';
 
+    /**
+     * The filesystem instance.
+     *
+     * @var \Illuminate\Filesystem\Filesystem
+     */
+    protected $files;
 
     /**
      * The console command description.
@@ -34,11 +42,14 @@ class ApiCrudGenerator extends Command
     /**
      * Create a new command instance.
      *
+     * @param  \Illuminate\Filesystem\Filesystem  $files
      * @return void
      */
-    public function __construct()
+    public function __construct(Filesystem $files)
     {
         parent::__construct();
+
+        $this->files = $files;
     }
 
     /**
@@ -70,17 +81,47 @@ class ApiCrudGenerator extends Command
 
     /**
      * Get the file from the stub
+     *
      * @param $type
      * @return bool|string
      */
     protected function getStub($type)
     {
-        return file_get_contents(resource_path("stubs/$type.stub"));
+        if ($this->files->exists(resource_path("stubs/$type.stub"))) {
+            return $this->files->get(resource_path("stubs/$type.stub"));
+        } else {
+            return $this->files->get(__DIR__ . "/../stubs/{$type}.stub");
+        }
     }
 
+    /**
+     * Fill stub with data
+     *
+     * @param $stub string name of stub
+     * @param $name string name of resource
+     * @param $args array additional placeholders to replace
+     * @return void
+     */
+    protected function parseStub($stub, $name, $args = []) 
+    {
+        $toParse = array_merge([
+            'modelName' => $name,
+            'modelNamePluralLowerCase' => strtolower(str_plural($name)),
+            'modelNameSingularLowerCase' => strtolower($name)
+        ], $args);
+
+        return str_replace(
+            array_map(function ($k) {
+                return "{{{$k}}}";
+            }, array_keys($toParse)), 
+            array_values($toParse),
+            $this->getStub($stub)
+        );
+    }
 
     /**
      * Generate model class from stubs
+     *
      * @param $name string name of model class
      * @param $table string name of DB table
      * @param $timestamps boolean set timestamps true | false
@@ -88,152 +129,105 @@ class ApiCrudGenerator extends Command
     protected function model($name, $table, $timestamps)
     {
         $table === "default" ? $table = strtolower(str_plural($name)) : null;
-        $timeDeclaration = 'public $timestamps = false;';
-        if ($timestamps == "true")
-            $timeDeclaration = 'public $timestamps = true;';
-        $modelTemplate = str_replace(
-            [
-                '{{modelName}}',
-                '{{tableDeclaration}}',
-                '{{timestamps}}'
-            ],
-            [
-                $name,
-                $table,
-                $timeDeclaration,
-            ],
-            $this->getStub('Model')
-        );
 
-        if (!file_exists($path = app_path('/Models')))
-            mkdir($path, 0777, true);
+        $timeDeclaration = "";
+        if ($timestamps == "false") {
+            $timeDeclaration = 'public $timestamps = false;';
+        }
 
+        $content = $this->parseStub('Model', $name, [
+            'tableDeclaration' => $table,
+            'timestamps' => $timeDeclaration
+        ]);
 
-        file_put_contents(app_path("Models/{$name}.php"), $modelTemplate);
+        if (!$this->files->exists(app_path("Models/"))) {
+            $this->files->makeDirectory(app_path("Models/"));
+        }
+        $this->files->put(app_path("Models/{$name}.php"), $content);
     }
 
     /**
      * Create controller from controller.stub
+     *
      * @param $name
      */
     protected function controller($name)
     {
-        $controllerTemplate = str_replace(
-            [
-                '{{modelName}}',
-                '{{modelNamePluralLowerCase}}',
-                '{{modelNameSingularLowerCase}}'
-            ],
-            [
-                $name,
-                strtolower(str_plural($name)),
-                strtolower($name)
-            ],
-            $this->getStub('Controller')
-        );
+        $content = $this->parseStub('Controller', $name);
 
-        file_put_contents(app_path("/Http/Controllers/{$name}Controller.php"), $controllerTemplate);
+        $this->files->put(app_path("Http/Controllers/{$name}Controller.php"), $content);
     }
 
     /**
      * Generate Request from request.stub
+     *
      * @param $name
      */
     protected function request($name)
     {
-        $requestTemplate = str_replace(
-            ['{{modelName}}'],
-            [$name],
-            $this->getStub('Request')
-        );
+        $content = $this->parseStub('Request', $name);
 
-        if (!file_exists($path = app_path('/Http/Requests')))
-            mkdir($path, 0777, true);
-
-        file_put_contents(app_path("/Http/Requests/{$name}Request.php"), $requestTemplate);
+        if (!$this->files->exists(app_path("Http/Requests/"))) {
+            $this->files->makeDirectory(app_path("Http/Requests/"));
+        }
+        $this->files->put(app_path("Http/Requests/{$name}Request.php"), $content);
     }
 
     /**
      * Generate Resource from Resource.stub
+     *
      * @param $name
      */
     protected function resource($name)
     {
-        $resourceTemplate = str_replace(
-            ['{{modelName}}'],
-            [$name],
-            $this->getStub('Resource')
-        );
+        $content = $this->parseStub('Resource', $name);
 
-        if (!file_exists($path = app_path('/Http/Resources')))
-            mkdir($path, 0777, true);
-
-        file_put_contents(app_path("/Http/Resources/{$name}Resource.php"), $resourceTemplate);
+        if (!$this->files->exists(app_path("Http/Resources/"))) {
+            $this->files->makeDirectory(app_path("Http/Resources/"));
+        }
+        $this->files->put(app_path("Http/Resources/{$name}Resource.php"), $content);
     }
 
     /**
      * Generate factory from Factory.stub
+     *
      * @param $name
      */
     protected function factory($name)
     {
-        $factoryTemplate = str_replace(
-            ['{{modelName}}'],
-            [$name],
-            $this->getStub('Factory')
-        );
+        $content = $this->parseStub('Factory', $name);
 
-        if (!file_exists($path = base_path('/database/factories')))
-            mkdir($path, 0777, true);
-
-        file_put_contents(base_path("database/factories/{$name}Factory.php"), $factoryTemplate);
+        if (!$this->files->exists(base_path("database/factories/"))) {
+            $this->files->makeDirectory(base_path("database/factories/"));
+        }
+        $this->files->put(base_path("database/factories/{$name}Factory.php"), $content);
     }
 
     /**
      * Generate routes
+     *
      * @param $name
      */
-    protected function routes($name, $table)
+    protected function routes($name)
     {
-        $table === "default" ? $table = strtolower(str_plural($name)) : null;
-        $routeTemplate = str_replace(
-            [
-                '{{modelName}}',
-                '{{modelNamePluralLowerCase}}',
-                '{{modelNameSingularLowerCase}}'
-            ],
-            [
-                $name,
-                $table,
-                strtolower($name)
-            ],
-            $this->getStub('Routes')
-        );
-        File::append(base_path('routes/api.php'), $routeTemplate);
+        $content = $this->parseStub('Routes', $name);
+
+        $this->files->append(base_path("routes/api.php"), $content);
     }
 
     /**
      * Generate unit test
+     *
      * @param $name
-     * @param $table
      */
-    protected function test($name, $table)
+    protected function test($name)
     {
+        $content = $this->parseStub('Test', $name);
 
-        $testTemplate = str_replace(
-            [
-                '{{modelName}}',
-                '{{modelNamePluralLowerCase}}',
-                '{{modelNameSingularLowerCase}}',
-            ],
-            [
-                $name,
-                $table,
-                strtolower($name)
-            ],
-            $this->getStub('Test')
-        );
-        file_put_contents(base_path("tests/Feature/{$name}Test.php"), $testTemplate);
+        if (!$this->files->exists(base_path("tests/Feature/"))) {
+            $this->files->makeDirectory(base_path("tests/Feature/"));
+        }
+        $this->files->append(base_path("tests/Feature/{$name}Test.php"), $content);
     }
 
     /**
@@ -284,11 +278,11 @@ class ApiCrudGenerator extends Command
         $this->info("Generated Request!");
         $this->resource($name);
         $this->info("Generated Resource!");
-        $this->routes($name, $table);
+        $this->routes($name);
         $this->info("Generated routes!");
-        $this->factory($name, $table);
+        $this->factory($name);
         $this->info("Generated Factory!");
-        $this->test($name, $table);
+        $this->test($name);
         $this->info("Generated Test!");
     }
 
