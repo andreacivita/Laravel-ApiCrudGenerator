@@ -89,9 +89,9 @@ class ApiCrudGenerator extends Command
     {
         if ($this->files->exists(resource_path("stubs/$type.stub"))) {
             return $this->files->get(resource_path("stubs/$type.stub"));
-        } else {
-            return $this->files->get(__DIR__ . "/../stubs/{$type}.stub");
         }
+
+        return $this->files->get(__DIR__ . "/../stubs/{$type}.stub");
     }
 
     /**
@@ -111,8 +111,8 @@ class ApiCrudGenerator extends Command
         ], $args);
 
         return str_replace(
-            array_map(function ($k) {
-                return "{{{$k}}}";
+            array_map(function ($key) {
+                return "{{{$key}}}";
             }, array_keys($toParse)), 
             array_values($toParse),
             $this->getStub($stub)
