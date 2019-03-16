@@ -2,72 +2,43 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\{{modelName}};
 use App\Http\Requests\{{modelName}}Request;
-use App\Http\Resources\{{modelName}}Resource;
+use App\Model\{{modelName}};
 
 class {{modelName}}Controller extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        ${{modelNamePluralLowerCase}} = {{modelName}}::paginate();
 
-        return {{modelName}}Resource::collection(${{modelNamePluralLowerCase}});
+    public function all()
+    {
+        return response()->json({{modelName}}::all(),200);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \App\Http\Requests\{{modelName}}Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store({{modelName}}Request $request)
+    public function find($id)
     {
-        ${{modelNameSingularLowerCase}} = {{modelName}}::create($request->validated());
-
-        return new {{modelName}}Resource(${{modelNameSingularLowerCase}});
+       return response()->json({{modelName}}::findOrFail($id),200);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\{{modelName}}  ${{modelNameSingularLowerCase}}
-     * @return \Illuminate\Http\Response
-     */
-    public function show({{modelName}} ${{modelNameSingularLowerCase}})
+
+    public function put({{modelName}}Request $request)
     {
-        return new {{modelName}}Resource(${{modelNameSingularLowerCase}});
+        ${{modelNameSingularLowerCase}} = {{modelName}}::create($request->all());
+
+        return response()->json(${{modelNameSingularLowerCase}}, 201);
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \App\Http\Requests\{{modelName}}Request  $request
-     * @param  \App\Models\{{modelName}}  ${{modelNameSingularLowerCase}}
-     * @return \Illuminate\Http\Response
-     */
-    public function update({{modelName}}Request $request, {{modelName}} ${{modelNameSingularLowerCase}})
-    {
-        ${{modelNameSingularLowerCase}}->update($request->validated());
 
-        return new {{modelName}}Resource(${{modelNameSingularLowerCase}});
+    public function patch({{modelName}}Request $request, $id)
+    {
+        ${{modelNameSingularLowerCase}} = {{modelName}}::findOrFail($id);
+        ${{modelNameSingularLowerCase}}->update($request->all());
+
+        return response()->json(${{modelNameSingularLowerCase}}, 200);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\{{modelName}}  ${{modelNameSingularLowerCase}}
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy({{modelName}} ${{modelNameSingularLowerCase}})
+    public function delete($id)
     {
-        ${{modelNameSingularLowerCase}}->delete();
-
-        return response()->json("DELETED", 204);
+        if({{modelName}}::destroy($id))
+            return response()->json("DELETED", 204);
+        return response()->json("Errored", 504);
     }
 }
