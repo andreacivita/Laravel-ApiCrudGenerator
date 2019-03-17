@@ -1,6 +1,6 @@
 # Laravel | API CRUD Generator 
 
-## DEV Branch with experimental features
+## Testing Pull request 8
 
 This Generator package provides generators of Models, Controllers, Request, Routes & Tests for a painless development. 
 
