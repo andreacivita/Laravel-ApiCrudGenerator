@@ -129,7 +129,7 @@ class ApiCrudGenerator extends Command
         $table === "default" ? $table = strtolower(Str::plural($name)) : null;
 
         $timeDeclaration = "";
-        if ($timestamps == "false") {
+        if ($timestamps === false) {
             $timeDeclaration = 'public $timestamps = false;';
         }
 
