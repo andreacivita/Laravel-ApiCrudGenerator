@@ -106,7 +106,7 @@ class ApiCrudGenerator extends Command
     {
         $toParse = array_merge([
             'modelName' => $name,
-            'modelNamePluralLowerCase' => strtolower(str_plural($name)),
+            'modelNamePluralLowerCase' => strtolower(Str::plural($name)),
             'modelNameSingularLowerCase' => strtolower($name)
         ], $args);
 
@@ -128,7 +128,7 @@ class ApiCrudGenerator extends Command
      */
     protected function model($name, $table, $timestamps)
     {
-        $table === "default" ? $table = strtolower(str_plural($name)) : null;
+        $table === "default" ? $table = strtolower(Str::plural($name)) : null;
 
         $timeDeclaration = "";
         if ($timestamps == "false") {
@@ -240,9 +240,9 @@ class ApiCrudGenerator extends Command
         $this->comment("This command will guide you through creating your CRUD");
         $name = $this->ask('What is name of your Model?');
         $name = ucwords($name);
-        $table = $this->ask("Table name [" . strtolower(str_plural($name)) . "]:");
+        $table = $this->ask("Table name [" . strtolower(Str::plural($name)) . "]:");
         if ($table == "")
-            $table = str_plural($name);
+            $table = Str::plural($name);
         $table = strtolower($table);
         $choice = $this->choice('Do your table has timestamps column?', ['No', 'Yes'], 0);
         $choice === "Yes" ? $timestamps = true : $timestamps = false;
