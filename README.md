@@ -1,4 +1,5 @@
 <a href="https://codeclimate.com/github/andreacivita/Laravel-ApiCrudGenerator/maintainability"><img src="https://api.codeclimate.com/v1/badges/e22398ed005890048cb5/maintainability" /></a>
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/9f34629292c94cbbb29cc6de75465b24)](https://app.codacy.com/app/andreacivita/Laravel-ApiCrudGenerator?utm_source=github.com&utm_medium=referral&utm_content=andreacivita/Laravel-ApiCrudGenerator&utm_campaign=Badge_Grade_Dashboard)
 [![Latest Stable Version](https://poser.pugx.org/andreacivita/api-crud-generator/v/stable)](https://packagist.org/packages/andreacivita/api-crud-generator)
 [![License](https://poser.pugx.org/andreacivita/api-crud-generator/license)](https://packagist.org/packages/andreacivita/api-crud-generator)
 
