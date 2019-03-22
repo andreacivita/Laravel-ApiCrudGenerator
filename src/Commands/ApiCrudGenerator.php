@@ -63,6 +63,7 @@ class ApiCrudGenerator extends Command
      * Execute the console command.
      *
      * @return mixed
+     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     public function handle()
     {
@@ -248,6 +249,7 @@ class ApiCrudGenerator extends Command
 
     /**
      * Generate CRUD in interactive mode
+     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     protected function interactive()
     {
@@ -270,7 +272,7 @@ class ApiCrudGenerator extends Command
         $confirm = $this->ask("Press y to confirm, type N to restart");
         if ($confirm == "y") {
             $this->generate($name, $table, $timestamps);
-            die;
+            return;
         }
         $this->error("Aborted!");
 
@@ -306,6 +308,7 @@ class ApiCrudGenerator extends Command
 
     /**
      * Handle all-db generation
+     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     protected function all()
     {
