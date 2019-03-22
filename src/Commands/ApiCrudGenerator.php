@@ -2,12 +2,12 @@
 
 namespace AndreaCivita\ApiCrudGenerator\Commands;
 
+use AndreaCivita\ApiCrudGenerator\Generator;
 use Illuminate\Console\Command;
 use Illuminate\Database\QueryException;
-use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Str;
 
 class ApiCrudGenerator extends Command
 {
@@ -32,19 +32,39 @@ class ApiCrudGenerator extends Command
     protected $description = 'Create CRUD operations';
 
     /**
+     *
+     * Generator support instance
+     *
+     * @var \AndreaCivita\ApiCrudGenerator\Generator
+     */
+    protected $generator;
+
+
+    /**
+     * The String support instance
+     *
+     * @var \Illuminate\Support\Str
+     */
+    protected $str;
+
+    /**
      * Create a new command instance.
      *
-     * @return void
+     * @param Generator $generator
+     * @param Str $str
      */
-    public function __construct()
+    public function __construct(Generator $generator, Str $str)
     {
         parent::__construct();
+        $this->generator = $generator;
+        $this->str = $str;
     }
 
     /**
      * Execute the console command.
      *
      * @return mixed
+     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     public function handle()
     {
@@ -68,140 +88,10 @@ class ApiCrudGenerator extends Command
         return 0;
     }
 
-    /**
-     * Get the file from the stub
-     * @param $type
-     * @return bool|string
-     */
-    protected function getStub($type)
-    {
-        return file_get_contents(resource_path("stubs/$type.stub"));
-    }
-
-
-    /**
-     * Generate model class from stubs
-     * @param $name string name of model class
-     * @param $table string name of DB table
-     * @param $timestamps boolean set timestamps true | false
-     */
-    protected function model($name, $table, $timestamps)
-    {
-        $table === "default" ? $table = strtolower(str_plural($name)) : null;
-        $timeDeclaration = 'public $timestamps = false;';
-        if ($timestamps == "true")
-            $timeDeclaration = 'public $timestamps = true;';
-        $modelTemplate = str_replace(
-            [
-                '{{modelName}}',
-                '{{tableDeclaration}}',
-                '{{timestamps}}'
-            ],
-            [
-                $name,
-                $table,
-                $timeDeclaration,
-            ],
-            $this->getStub('Model')
-        );
-
-        if (!file_exists($path = app_path('/Model')))
-            mkdir($path, 0777, true);
-
-
-        file_put_contents(app_path("Model/{$name}.php"), $modelTemplate);
-    }
-
-    /**
-     * Create controller from controller.stub
-     * @param $name
-     */
-    protected function controller($name)
-    {
-        $controllerTemplate = str_replace(
-            [
-                '{{modelName}}',
-                '{{modelNamePluralLowerCase}}',
-                '{{modelNameSingularLowerCase}}'
-            ],
-            [
-                $name,
-                strtolower(str_plural($name)),
-                strtolower($name)
-            ],
-            $this->getStub('Controller')
-        );
-
-        file_put_contents(app_path("/Http/Controllers/{$name}Controller.php"), $controllerTemplate);
-    }
-
-    /**
-     * Generate Request from request.stub
-     * @param $name
-     */
-    protected function request($name)
-    {
-        $requestTemplate = str_replace(
-            ['{{modelName}}'],
-            [$name],
-            $this->getStub('Request')
-        );
-
-        if (!file_exists($path = app_path('/Http/Requests')))
-            mkdir($path, 0777, true);
-
-        file_put_contents(app_path("/Http/Requests/{$name}Request.php"), $requestTemplate);
-    }
-
-    /**
-     * Generate routes
-     * @param $name
-     */
-    protected function routes($name, $table)
-    {
-        $table === "default" ? $table = strtolower(str_plural($name)) : null;
-        $requestTemplate = str_replace(
-            [
-                '{{modelName}}',
-                '{{modelNamePluralLowerCase}}',
-                '{{modelNameSingularLowerCase}}'
-            ],
-            [
-                $name,
-                $table,
-                strtolower($name)
-            ],
-            $this->getStub('Routes')
-        );
-        File::append(base_path('routes/api.php'), $requestTemplate);
-    }
-
-    /**
-     * Generate unit test
-     * @param $name
-     * @param $table
-     */
-    protected function test($name, $table)
-    {
-
-        $testTemplate = str_replace(
-            [
-                '{{modelName}}',
-                '{{modelNamePluralLowerCase}}',
-                '{{modelNameSingularLowerCase}}',
-            ],
-            [
-                $name,
-                $table,
-                strtolower($name)
-            ],
-            $this->getStub('Test')
-        );
-        File::append(base_path("tests/Unit/{$name}Test.php"), $testTemplate);
-    }
 
     /**
      * Generate CRUD in interactive mode
+     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     protected function interactive()
     {
@@ -210,9 +100,9 @@ class ApiCrudGenerator extends Command
         $this->comment("This command will guide you through creating your CRUD");
         $name = $this->ask('What is name of your Model?');
         $name = ucwords($name);
-        $table = $this->ask("Table name [" . strtolower(str_plural($name)) . "]:");
+        $table = $this->ask("Table name [" . strtolower($this->str->plural($name)) . "]:");
         if ($table == "")
-            $table = str_plural($name);
+            $table = $this->str->plural($name);
         $table = strtolower($table);
         $choice = $this->choice('Do your table has timestamps column?', ['No', 'Yes'], 0);
         $choice === "Yes" ? $timestamps = true : $timestamps = false;
@@ -224,7 +114,7 @@ class ApiCrudGenerator extends Command
         $confirm = $this->ask("Press y to confirm, type N to restart");
         if ($confirm == "y") {
             $this->generate($name, $table, $timestamps);
-            die;
+            return;
         }
         $this->error("Aborted!");
 
@@ -237,24 +127,30 @@ class ApiCrudGenerator extends Command
      * @param $name string Model Name
      * @param $table string Table Name
      * @param $timestamps boolean
+     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     protected function generate($name, $table, $timestamps)
     {
-        $this->controller($name);
+        $this->generator->controller($name);
         $this->info("Generated Controller!");
-        $this->model($name, $table, $timestamps);
+        $this->generator->model($name, $table, $timestamps);
         $this->info("Generated Model!");
-        $this->request($name);
+        $this->generator->request($name);
         $this->info("Generated Request!");
-        $this->routes($name, $table);
+        $this->generator->resource($name);
+        $this->info("Generated Resource!");
+        $this->generator->routes($name);
         $this->info("Generated routes!");
-        $this->test($name, $table);
+        $this->generator->factory($name);
+        $this->info("Generated Factory!");
+        $this->generator->test($name);
         $this->info("Generated Test!");
     }
 
 
     /**
      * Handle all-db generation
+     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     protected function all()
     {
@@ -264,7 +160,7 @@ class ApiCrudGenerator extends Command
                 $this->comment("Generating " . $table->Tables_in_crud . " CRUD");
                 $columns = Schema::getColumnListing($table->Tables_in_crud);
                 $table = $table->Tables_in_crud;
-                $name = ucwords(str_singular($table));
+                $name = ucwords($this->str->singular($table));
                 in_array('created_at', $columns) ? $timestamps = true : $timestamps = false;
                 $this->generate($name, $table, $timestamps);
             }
