@@ -1,6 +1,9 @@
-# Laravel | API CRUD Generator 
+<a href="https://codeclimate.com/github/andreacivita/Laravel-ApiCrudGenerator/maintainability"><img src="https://api.codeclimate.com/v1/badges/e22398ed005890048cb5/maintainability" /></a>
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/9f34629292c94cbbb29cc6de75465b24)](https://app.codacy.com/app/andreacivita/Laravel-ApiCrudGenerator?utm_source=github.com&utm_medium=referral&utm_content=andreacivita/Laravel-ApiCrudGenerator&utm_campaign=Badge_Grade_Dashboard)
+[![Latest Stable Version](https://poser.pugx.org/andreacivita/api-crud-generator/v/stable)](https://packagist.org/packages/andreacivita/api-crud-generator)
+[![License](https://poser.pugx.org/andreacivita/api-crud-generator/license)](https://packagist.org/packages/andreacivita/api-crud-generator)
 
-## Testing Pull request 8
+# Laravel | API CRUD Generator
 
 This Generator package provides generators of Models, Controllers, Request, Routes & Tests for a painless development. 
 
@@ -42,7 +45,7 @@ No further options required. Your setup is complete!
 
 ### Interactive mode
 
-You can manage a single table with interactive mode or manually (see below).
+You can manage a single table with interactive mode or manually (see [next paragraph](https://github.com/andreacivita/Laravel-ApiCrudGenerator#managing-a-single-db-table)).
 
 Just run
 
@@ -87,36 +90,58 @@ This will set 'timestamps=true' in Model class.
 
 ## ROUTING
 
-I developed this package for myself. So, default generation of API Routes will follow this schema:
+Routes will follow Route::resource() Schema (default routing schema provided by Laravel).
+
 Example: i'm generating Car crud
 
 | Route         | Method           | Operation        |
 | ------------- |:----------------:| ----------------:|
-| cars          | GET              | Get all cars     |
+| car           | GET              | Get all cars     |
 | car/{id}      | GET              | Find car by id   |
-| car           | PUT              | Insert a new car |
-| car/{id}      | PATCH            | Update car by id |
+| car           | POST              | Insert a new car |
+| car/{id}      | PUT / PATCH            | Update car by id |
 | car/{id}      | DELETE           | Delete car by id |
+
 
 Remember that all api routes have 'api/' prefix.
 
 ## TESTING
 
-When created CRUD structure (Controllers, Models, Request & Routes), this package generate Unit test file. <br>
-**IMPORTANT** : Testing insert and update functions are not yet implemented.
+When created CRUD structure (Controllers, Models, Request, Resource, Factory & Routes), this package generate Feature test file. <br>
 
+<hr>
+
+## SETUP GENERATED CRUD
+
+### FACTORIES
+
+Tests now require factory class to manipulate data.
+You should provide data schema into your factory class (using Faker), so you'll be able to test easily your API
+
+### VALIDATORS
+
+Write better code will helps you so much! So, default behavior of Controllers is to force you to use validated data.
+You have to set all validation rules into your FormRequest class.
+
+E.g. For Car Crud, you will set rules into your App\Request\CarRequest.php
+
+<hr>
 ## CONTRIBUTING
 
-This package is covered by LGPL license. You are able to do whatever you want with this code.
+This package is covered by MIT license. You are able to do whatever you want with this code.
 
 Please feel free to fork this package and contribute by submitting a pull request to enhance the functionalities.
 You can see issues or enhancement and assign task for contributing :)
 
-**Remember that all modifications must be under the same license (or GNU GPLv3).**
 
 ## How can I thank you?
 
 Star this repo or follow me on GitHub. And, if you want, you can share this link! :)
 
+<hr>
 
+## AUTHORS 
+
+This package has been originally developed by (Andrea Civita)[https://github.com/andreacivita]<br>
+A special thanks goes to (Bastianjoel)[https://github.com/bastianjoel] for it's pull request
 
