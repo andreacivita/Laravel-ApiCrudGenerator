@@ -31,6 +31,13 @@ class ApiCrudGenerator extends Command
     protected $files;
 
     /**
+     * The String support instance
+     * 
+     * @var \Illuminate\Support\Str
+     */
+    protected $str;
+
+    /**
      * The console command description.
      *
      * @var string
@@ -40,14 +47,16 @@ class ApiCrudGenerator extends Command
     /**
      * Create a new command instance.
      *
-     * @param  \Illuminate\Filesystem\Filesystem  $files
+     * @param  \Illuminate\Filesystem\Filesystem  $files Filesystem Dependency
+     * @param  \Illuminate\Support\Str  $str String Dependency
      * @return void
      */
-    public function __construct(Filesystem $files)
+    public function __construct(Filesystem $files, Str $str)
     {
         parent::__construct();
 
         $this->files = $files;
+        $this->str = $str;
     }
 
     /**
@@ -82,6 +91,7 @@ class ApiCrudGenerator extends Command
      *
      * @param $type
      * @return bool|string
+     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     protected function getStub($type)
     {
@@ -98,13 +108,14 @@ class ApiCrudGenerator extends Command
      * @param $stub string name of stub
      * @param $name string name of resource
      * @param $args array additional placeholders to replace
-     * @return void
+     * @return mixed
+     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     protected function parseStub($stub, $name, $args = []) 
     {
         $toParse = array_merge([
             'modelName' => $name,
-            'modelNamePluralLowerCase' => strtolower(Str::plural($name)),
+            'modelNamePluralLowerCase' => strtolower($this->str->plural($name)),
             'modelNameSingularLowerCase' => strtolower($name)
         ], $args);
 
@@ -123,10 +134,11 @@ class ApiCrudGenerator extends Command
      * @param $name string name of model class
      * @param $table string name of DB table
      * @param $timestamps boolean set timestamps true | false
+     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     protected function model($name, $table, $timestamps)
     {
-        $table === "default" ? $table = strtolower(Str::plural($name)) : null;
+        $table === "default" ? $table = strtolower($this->str->plural($name)) : null;
 
         $timeDeclaration = "";
         if ($timestamps === false) {
@@ -148,6 +160,7 @@ class ApiCrudGenerator extends Command
      * Create controller from controller.stub
      *
      * @param $name
+     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     protected function controller($name)
     {
@@ -160,6 +173,7 @@ class ApiCrudGenerator extends Command
      * Generate Request from request.stub
      *
      * @param $name
+     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     protected function request($name)
     {
@@ -175,6 +189,7 @@ class ApiCrudGenerator extends Command
      * Generate Resource from Resource.stub
      *
      * @param $name
+     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     protected function resource($name)
     {
@@ -190,6 +205,7 @@ class ApiCrudGenerator extends Command
      * Generate factory from Factory.stub
      *
      * @param $name
+     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     protected function factory($name)
     {
@@ -205,6 +221,7 @@ class ApiCrudGenerator extends Command
      * Generate routes
      *
      * @param $name
+     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     protected function routes($name)
     {
@@ -217,6 +234,7 @@ class ApiCrudGenerator extends Command
      * Generate unit test
      *
      * @param $name
+     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     protected function test($name)
     {
@@ -238,9 +256,9 @@ class ApiCrudGenerator extends Command
         $this->comment("This command will guide you through creating your CRUD");
         $name = $this->ask('What is name of your Model?');
         $name = ucwords($name);
-        $table = $this->ask("Table name [" . strtolower(Str::plural($name)) . "]:");
+        $table = $this->ask("Table name [" . strtolower($this->str->plural($name)) . "]:");
         if ($table == "")
-            $table = Str::plural($name);
+            $table = $this->str->plural($name);
         $table = strtolower($table);
         $choice = $this->choice('Do your table has timestamps column?', ['No', 'Yes'], 0);
         $choice === "Yes" ? $timestamps = true : $timestamps = false;
@@ -265,6 +283,7 @@ class ApiCrudGenerator extends Command
      * @param $name string Model Name
      * @param $table string Table Name
      * @param $timestamps boolean
+     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     protected function generate($name, $table, $timestamps)
     {
@@ -296,7 +315,7 @@ class ApiCrudGenerator extends Command
                 $this->comment("Generating " . $table->Tables_in_crud . " CRUD");
                 $columns = Schema::getColumnListing($table->Tables_in_crud);
                 $table = $table->Tables_in_crud;
-                $name = ucwords(str_singular($table));
+                $name = ucwords($this->str->singular($table));
                 in_array('created_at', $columns) ? $timestamps = true : $timestamps = false;
                 $this->generate($name, $table, $timestamps);
             }
