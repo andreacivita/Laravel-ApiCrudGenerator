@@ -22,10 +22,22 @@ class Stub
      */
     protected $files;
 
+    /**
+     * The String support instance
+     *
+     * @var \Illuminate\Support\Str
+     */
+    protected $str;
 
-    public function __construct(Filesystem $filesystem)
+    /**
+     * Stub constructor.
+     * @param Filesystem $filesystem
+     * @param Str $str
+     */
+    public function __construct(Filesystem $filesystem,Str $str)
     {
         $this->files = $filesystem;
+        $this->str = $str;
     }
 
 
