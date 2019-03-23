@@ -143,5 +143,5 @@ Star this repo or follow me on GitHub. And, if you want, you can share this link
 ## AUTHORS 
 
 This package has been originally developed by [Andrea Civita](https://github.com/andreacivita)<br>
-A special thanks goes to [Bastianjoel](https://github.com/bastianjoel) for it's pull request
+A special thanks goes to [Bastianjoel](https://github.com/bastianjoel) for his pull request
 
