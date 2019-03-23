@@ -2,7 +2,7 @@
 
 namespace AndreaCivita\ApiCrudGenerator\Commands;
 
-use AndreaCivita\ApiCrudGenerator\Generator;
+use AndreaCivita\ApiCrudGenerator\Core\Generator;
 use Illuminate\Console\Command;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\DB;
@@ -35,7 +35,7 @@ class ApiCrudGenerator extends Command
      *
      * Generator support instance
      *
-     * @var \AndreaCivita\ApiCrudGenerator\Generator
+     * @var \AndreaCivita\ApiCrudGenerator\Core\Generator
      */
     protected $generator;
 
