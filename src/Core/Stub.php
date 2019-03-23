@@ -1,7 +1,7 @@
 <?php
 
 
-namespace AndreaCivita\ApiCrudGenerator;
+namespace AndreaCivita\ApiCrudGenerator\Core;
 
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Str;

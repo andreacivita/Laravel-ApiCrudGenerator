@@ -6,7 +6,7 @@
  * Time: 11:16
  */
 
-namespace AndreaCivita\ApiCrudGenerator;
+namespace AndreaCivita\ApiCrudGenerator\Core;
 
 
 use Illuminate\Filesystem\Filesystem;
@@ -32,7 +32,7 @@ class Generator
     /**
      * The Stub support instance
      * 
-     * @var \AndreaCivita\ApiCrudGenerator\Stub;
+     * @var \AndreaCivita\ApiCrudGenerator\Core\Stub;
      */
     protected $stub;
 
