@@ -1,13 +1,6 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: andre
- * Date: 22/03/2019
- * Time: 11:16
- */
 
 namespace AndreaCivita\ApiCrudGenerator\Core;
-
 
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Str;
