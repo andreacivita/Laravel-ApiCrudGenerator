@@ -58,10 +58,10 @@ class Generator
             'timestamps' => $timeDeclaration
         ]);
 
-        if (!$this->files->exists(app_path("Models/"))) {
-            $this->files->makeDirectory(app_path("Models/"));
+        if (!$this->files->exists("/app/Models/")) {
+            $this->files->makeDirectory("/app/Models/");
         }
-        $this->files->put(app_path("Models/{$name}.php"), $content);
+        $this->files->put("/app/Models/{$name}.php", $content);
     }
 
     /**
@@ -74,7 +74,7 @@ class Generator
     {
         $content = $this->stub->parseStub('Controller', $name);
 
-        $this->files->put(app_path("Http/Controllers/{$name}Controller.php"), $content);
+        $this->files->put("/app/Http/Controllers/{$name}Controller.php", $content);
     }
 
     /**
@@ -87,10 +87,10 @@ class Generator
     {
         $content = $this->stub->parseStub('Request', $name);
 
-        if (!$this->files->exists(app_path("Http/Requests/"))) {
-            $this->files->makeDirectory(app_path("Http/Requests/"));
+        if (!$this->files->exists("/app/Http/Requests/")) {
+            $this->files->makeDirectory("/app/Http/Requests/");
         }
-        $this->files->put(app_path("Http/Requests/{$name}Request.php"), $content);
+        $this->files->put("/app/Http/Requests/{$name}Request.php", $content);
     }
 
     /**
@@ -103,10 +103,10 @@ class Generator
     {
         $content = $this->stub->parseStub('Resource', $name);
 
-        if (!$this->files->exists(app_path("Http/Resources/"))) {
-            $this->files->makeDirectory(app_path("Http/Resources/"));
+        if (!$this->files->exists("/app/Http/Resources/")) {
+            $this->files->makeDirectory("/app/Http/Resources/");
         }
-        $this->files->put(app_path("Http/Resources/{$name}Resource.php"), $content);
+        $this->files->put("/app/Http/Resources/{$name}Resource.php", $content);
     }
 
     /**
@@ -119,10 +119,10 @@ class Generator
     {
         $content = $this->stub->parseStub('Factory', $name);
 
-        if (!$this->files->exists(base_path("database/factories/"))) {
-            $this->files->makeDirectory(base_path("database/factories/"));
+        if (!$this->files->exists("/database/factories/")) {
+            $this->files->makeDirectory("/database/factories/");
         }
-        $this->files->put(base_path("database/factories/{$name}Factory.php"), $content);
+        $this->files->put("/database/factories/{$name}Factory.php", $content);
     }
 
     /**
@@ -135,7 +135,7 @@ class Generator
     {
         $content = $this->stub->parseStub('Routes', $name);
 
-        $this->files->append(base_path("routes/api.php"), $content);
+        $this->files->append("/routes/api.php", $content);
     }
 
     /**
@@ -148,9 +148,9 @@ class Generator
     {
         $content = $this->stub->parseStub('Test', $name);
 
-        if (!$this->files->exists(base_path("tests/Feature/"))) {
-            $this->files->makeDirectory(base_path("tests/Feature/"));
+        if (!$this->files->exists("/tests/Feature/")) {
+            $this->files->makeDirectory("/tests/Feature/");
         }
-        $this->files->append(base_path("tests/Feature/{$name}Test.php"), $content);
+        $this->files->append("/tests/Feature/{$name}Test.php", $content);
     }
 }
