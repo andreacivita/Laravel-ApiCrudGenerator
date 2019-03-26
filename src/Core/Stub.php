@@ -50,8 +50,8 @@ class Stub
      */
     protected function getStub($type)
     {
-        if ($this->files->exists(resource_path("stubs/$type.stub"))) {
-            return $this->files->get(resource_path("stubs/$type.stub"));
+        if ($this->files->exists("/resources/stubs/$type.stub")) {
+            return $this->files->get("/resources/stubs/$type.stub");
         }
 
         return $this->files->get(__DIR__ . "/../stubs/{$type}.stub");
