@@ -135,7 +135,7 @@ class Generator
     {
         $content = $this->stub->parseStub('Routes', $name);
 
-        $this->files->append("/routes/api.php", $content);
+        $this->files->append("routes/api.php", $content);
     }
 
     /**
