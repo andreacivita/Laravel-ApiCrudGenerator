@@ -42,6 +42,7 @@ class Generator
      * @param $name string name of model class
      * @param $table string name of DB table
      * @param $timestamps boolean set timestamps true | false
+     * @return bool|int
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     public function model($name, $table, $timestamps)
@@ -61,26 +62,28 @@ class Generator
         if (!$this->files->exists("app/Models/")) {
             $this->files->makeDirectory("app/Models/");
         }
-        $this->files->put("app/Models/{$name}.php", $content);
+        return $this->files->put("app/Models/{$name}.php", $content);
     }
 
     /**
      * Create controller from controller.stub
      *
      * @param $name
+     * @return bool|int
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     public function controller($name)
     {
         $content = $this->stub->parseStub('Controller', $name);
 
-        $this->files->put("app/Http/Controllers/{$name}Controller.php", $content);
+        return $this->files->put("app/Http/Controllers/{$name}Controller.php", $content);
     }
 
     /**
      * Generate Request from request.stub
      *
      * @param $name
+     * @return bool|int
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     public function request($name)
@@ -90,13 +93,14 @@ class Generator
         if (!$this->files->exists("app/Http/Requests/")) {
             $this->files->makeDirectory("app/Http/Requests/");
         }
-        $this->files->put("app/Http/Requests/{$name}Request.php", $content);
+        return $this->files->put("app/Http/Requests/{$name}Request.php", $content);
     }
 
     /**
      * Generate Resource from Resource.stub
      *
      * @param $name
+     * @return bool|int
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     public function resource($name)
@@ -106,13 +110,14 @@ class Generator
         if (!$this->files->exists("app/Http/Resources/")) {
             $this->files->makeDirectory("app/Http/Resources/");
         }
-        $this->files->put("app/Http/Resources/{$name}Resource.php", $content);
+        return $this->files->put("app/Http/Resources/{$name}Resource.php", $content);
     }
 
     /**
      * Generate factory from Factory.stub
      *
      * @param $name
+     * @return int
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     public function factory($name)
@@ -122,26 +127,28 @@ class Generator
         if (!$this->files->exists("database/factories/")) {
             $this->files->makeDirectory("database/factories/");
         }
-        $this->files->put("database/factories/{$name}Factory.php", $content);
+        return $this->files->put("database/factories/{$name}Factory.php", $content);
     }
 
     /**
      * Generate routes
      *
      * @param $name
+     * @return int
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     public function routes($name)
     {
         $content = $this->stub->parseStub('Routes', $name);
 
-        $this->files->append("routes/api.php", $content);
+        return $this->files->append("routes/api.php", $content);
     }
 
     /**
      * Generate unit test
      *
      * @param $name
+     * @return int
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     public function test($name)
@@ -151,6 +158,6 @@ class Generator
         if (!$this->files->exists("tests/Feature/")) {
             $this->files->makeDirectory("tests/Feature/");
         }
-        $this->files->append("tests/Feature/{$name}Test.php", $content);
+        return $this->files->append("tests/Feature/{$name}Test.php", $content);
     }
 }
