@@ -76,11 +76,11 @@ class GeneratorTest extends TestCase
         $files->cleanDirectory('app');
         $files->cleanDirectory('database');
         $files->cleanDirectory('routes');
-        $files->cleanDirectory('test');
+        $files->cleanDirectory('tests/Feature');
         $files->deleteDirectory('app');
         $files->deleteDirectory('database');
         $files->deleteDirectory('routes');
-        $files->deleteDirectory('tests');
+        $files->deleteDirectory('tests/Feature');
 
     }
 }
