@@ -76,6 +76,8 @@ class GeneratorTest extends TestCase
 
     public function testSecureRoutes()
     {
+        $this->files->makeDirectory('routes',0777, true);
+        touch('routes/api.php',0777, true);
         $this->assertIsInt($this->generator->secureRoutes($this->name));
     }
 
