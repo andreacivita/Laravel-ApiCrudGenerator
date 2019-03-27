@@ -74,6 +74,11 @@ class GeneratorTest extends TestCase
         $this->assertIsInt($this->generator->routes($this->name));
     }
 
+    public function testSecureRoutes()
+    {
+        $this->assertIsInt($this->generator->secureRoutes($this->name));
+    }
+
     public function testMakeTests()
     {
         $this->files->makeDirectory('tests/Feature',0777, true);
