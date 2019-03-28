@@ -145,6 +145,18 @@ class Generator
     }
 
     /**
+     * @param $name
+     * @return int
+     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
+     */
+    public function secureRoutes($name)
+    {
+        $content = $this->stub->parseStub('Passport-Routes', $name);
+
+        return $this->files->append("routes/api.php", $content);
+    }
+
+    /**
      * Generate unit test
      *
      * @param $name

@@ -21,7 +21,8 @@ class ApiCrudGenerator extends Command
     {--table=default : Table name (plural) for example users | Default is generated-plural}
     {--timestamps=false : Set default timestamps}
     {--interactive=false : Interactive mode}
-    {--all=false : Interactive mode}';
+    {--all=false : Interactive mode}
+    {--passport=false : Secure routes with passport}';
 
 
     /**
@@ -46,6 +47,11 @@ class ApiCrudGenerator extends Command
      * @var \Illuminate\Support\Str
      */
     protected $str;
+
+    /**
+     * @var bool Passport option
+     */
+    protected $passport;
 
     /**
      * Create a new command instance.
@@ -74,11 +80,15 @@ class ApiCrudGenerator extends Command
             return 0;
         }
 
-        // Checkig all mode
+        // Checking all mode
         if ($this->option('all') == "") {
             $this->all();
             return 0;
         }
+
+        // Checking Passport mode
+        if ($this->option('passport') == "")
+            $this->passport = true;
 
         // If here, no interactive || all selected
         $name = ucwords($this->argument('name'));
@@ -139,7 +149,10 @@ class ApiCrudGenerator extends Command
         $this->info("Generated Request!");
         $this->generator->resource($name);
         $this->info("Generated Resource!");
-        $this->generator->routes($name);
+        if ($this->passport)
+            $this->generator->secureRoutes($name);
+        else
+            $this->generator->routes($name);
         $this->info("Generated routes!");
         $this->generator->factory($name);
         $this->info("Generated Factory!");
