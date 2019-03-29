@@ -38,9 +38,10 @@ class GeneratorTest extends TestCase
 
     public function testModel()
     {
-       
         $this->files->makeDirectory('app/Models',0777, true);
         $this->assertIsInt($this->generator->model($this->name,"cars",true));
+        $this->assertIsInt($this->generator->model($this->name,"cars",false));
+
     }
 
     public function testController()
