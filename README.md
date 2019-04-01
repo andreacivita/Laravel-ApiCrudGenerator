@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/andreacivita/Laravel-ApiCrudGenerator.svg?branch=master)](https://travis-ci.org/andreacivita/Laravel-ApiCrudGenerator)
+[![codecov](https://codecov.io/gh/andreacivita/Laravel-ApiCrudGenerator/branch/master/graph/badge.svg)](https://codecov.io/gh/andreacivita/Laravel-ApiCrudGenerator)
 <a href="https://codeclimate.com/github/andreacivita/Laravel-ApiCrudGenerator/maintainability"><img src="https://api.codeclimate.com/v1/badges/e22398ed005890048cb5/maintainability" /></a>
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/9f34629292c94cbbb29cc6de75465b24)](https://app.codacy.com/app/andreacivita/Laravel-ApiCrudGenerator?utm_source=github.com&utm_medium=referral&utm_content=andreacivita/Laravel-ApiCrudGenerator&utm_campaign=Badge_Grade_Dashboard)
 [![Latest Stable Version](https://poser.pugx.org/andreacivita/api-crud-generator/v/stable)](https://packagist.org/packages/andreacivita/api-crud-generator)
@@ -87,6 +89,17 @@ php artisan make:crud Car --timestamps true
 ```
 
 This will set 'timestamps=true' in Model class.
+
+#### LARAVEL/PASSPORT INTEGRATION
+
+By default, Routes will be not protected by passport. However, you can generate Passport-protected routes with:
+
+```sh
+php artisan make:crud Car --passport
+```
+
+This will set 'timestamps=true' in Model class.
+
 
 ## ROUTING
 
