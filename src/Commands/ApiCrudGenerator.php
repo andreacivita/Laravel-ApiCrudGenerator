@@ -54,16 +54,34 @@ class ApiCrudGenerator extends Command
     protected $passport;
 
     /**
+     * Db support istance
+     *
+     * @var \Illuminate\Support\Facades\DB $db
+     */
+    protected $db;
+
+    /**
+     * Schema support instance
+     *
+     * @var \Illuminate\Support\Facades\Schema $schema
+     */
+    protected $schema;
+
+    /**
      * Create a new command instance.
      *
      * @param Generator $generator
      * @param Str $str
+     * @param DB $db
+     * @param Schema $schema
      */
-    public function __construct(Generator $generator, Str $str)
+    public function __construct(Generator $generator, Str $str, DB $db, Schema $schema)
     {
         parent::__construct();
         $this->generator = $generator;
         $this->str = $str;
+        $this->db = $db;
+        $this->schema = $schema;
     }
 
     /**
@@ -127,8 +145,6 @@ class ApiCrudGenerator extends Command
             return;
         }
         $this->error("Aborted!");
-
-
     }
 
 
@@ -168,10 +184,10 @@ class ApiCrudGenerator extends Command
     protected function all()
     {
         try {
-            $tables = DB::select('SHOW TABLES');
+            $tables = $this->db->select('SHOW TABLES');
             foreach ($tables as $table) {
                 $this->comment("Generating " . $table->Tables_in_crud . " CRUD");
-                $columns = Schema::getColumnListing($table->Tables_in_crud);
+                $columns = $this->schema->getColumnListing($table->Tables_in_crud);
                 $table = $table->Tables_in_crud;
                 $name = ucwords($this->str->singular($table));
                 in_array('created_at', $columns) ? $timestamps = true : $timestamps = false;
