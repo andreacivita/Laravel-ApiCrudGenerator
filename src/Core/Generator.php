@@ -68,9 +68,8 @@ class Generator
     /**
      * Create controller from controller.stub
      *
-     * @param $name
+     * @param $name string name of model class
      * @return bool|int
-     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     public function controller($name)
     {
