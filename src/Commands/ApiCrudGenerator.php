@@ -184,7 +184,7 @@ class ApiCrudGenerator extends Command
     protected function all()
     {
         try {
-            $tables = $this->db->select('SHOW TABLES');
+            $tables =  DB::select('SHOW TABLES');
             foreach ($tables as $table) {
                 $this->comment("Generating " . $table->Tables_in_crud . " CRUD");
                 $columns = $this->schema->getColumnListing($table->Tables_in_crud);

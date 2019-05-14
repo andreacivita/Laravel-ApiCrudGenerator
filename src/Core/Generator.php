@@ -43,7 +43,6 @@ class Generator
      * @param $table string name of DB table
      * @param $timestamps boolean set timestamps true | false
      * @return bool|int
-     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     public function model($name, $table, $timestamps)
     {
