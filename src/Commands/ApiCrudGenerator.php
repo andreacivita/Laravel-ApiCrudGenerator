@@ -187,7 +187,7 @@ class ApiCrudGenerator extends Command
             $tables =  DB::select('SHOW TABLES');
             foreach ($tables as $table) {
                 $this->comment("Generating " . $table->Tables_in_crud . " CRUD");
-                $columns = $this->schema->getColumnListing($table->Tables_in_crud);
+                $columns = Schema::getColumnListing($table->Tables_in_crud);
                 $table = $table->Tables_in_crud;
                 $name = ucwords($this->str->singular($table));
                 in_array('created_at', $columns) ? $timestamps = true : $timestamps = false;
