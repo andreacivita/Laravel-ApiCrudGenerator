@@ -3,6 +3,7 @@
 namespace AndreaCivita\ApiCrudGenerator\Commands;
 
 use AndreaCivita\ApiCrudGenerator\Core\Generator;
+use Doctrine\DBAL\Driver\PDOException;
 use Illuminate\Console\Command;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\DB;
@@ -118,6 +119,28 @@ class ApiCrudGenerator extends Command
 
 
     /**
+     * Handle all-db generation
+     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
+     */
+    protected function all()
+    {
+        try {
+            $tables =  DB::connection()->getDoctrineSchemaManager()->listTableNames();
+            foreach ($tables as $table) {
+                $this->comment("Generating " . $table . " CRUD");
+                $columns = Schema::getColumnListing($table);
+                $name = ucwords($this->str->singular($table));
+                in_array('created_at', $columns) ? $timestamps = true : $timestamps = false;
+                $this->generate($name, $table, $timestamps);
+            }
+        }
+        catch (QueryException $exception) {
+            $this->error("Error: " . $exception->getMessage());
+        }
+    }
+
+
+    /**
      * Generate CRUD in interactive mode
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
@@ -176,25 +199,4 @@ class ApiCrudGenerator extends Command
         $this->info("Generated Test!");
     }
 
-
-    /**
-     * Handle all-db generation
-     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
-     */
-    protected function all()
-    {
-        try {
-            $tables =  DB::select('SHOW TABLES');
-            foreach ($tables as $table) {
-                $this->comment("Generating " . $table->Tables_in_crud . " CRUD");
-                $columns = Schema::getColumnListing($table->Tables_in_crud);
-                $table = $table->Tables_in_crud;
-                $name = ucwords($this->str->singular($table));
-                in_array('created_at', $columns) ? $timestamps = true : $timestamps = false;
-                $this->generate($name, $table, $timestamps);
-            }
-        } catch (QueryException $exception) {
-            $this->error("Error: " . $exception->getMessage());
-        }
-    }
 }
