@@ -54,12 +54,6 @@ class ApiCrudGenerator extends Command
      */
     protected $passport;
 
-    /**
-     * Db support istance
-     *
-     * @var \Illuminate\Support\Facades\DB $db
-     */
-    protected $db;
 
     /**
      * Schema support instance
@@ -73,15 +67,13 @@ class ApiCrudGenerator extends Command
      *
      * @param Generator $generator
      * @param Str $str
-     * @param DB $db
      * @param Schema $schema
      */
-    public function __construct(Generator $generator, Str $str, DB $db, Schema $schema)
+    public function __construct(Generator $generator, Str $str, Schema $schema)
     {
         parent::__construct();
         $this->generator = $generator;
         $this->str = $str;
-        $this->db = $db;
         $this->schema = $schema;
     }
 
