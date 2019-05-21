@@ -3,6 +3,7 @@
 namespace AndreaCivita\ApiCrudGenerator\Commands;
 
 use AndreaCivita\ApiCrudGenerator\Core\Generator;
+use Doctrine\DBAL\Driver\PDOException;
 use Illuminate\Console\Command;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\DB;
@@ -53,12 +54,6 @@ class ApiCrudGenerator extends Command
      */
     protected $passport;
 
-    /**
-     * Db support istance
-     *
-     * @var \Illuminate\Support\Facades\DB $db
-     */
-    protected $db;
 
     /**
      * Schema support instance
@@ -72,15 +67,13 @@ class ApiCrudGenerator extends Command
      *
      * @param Generator $generator
      * @param Str $str
-     * @param DB $db
      * @param Schema $schema
      */
-    public function __construct(Generator $generator, Str $str, DB $db, Schema $schema)
+    public function __construct(Generator $generator, Str $str, Schema $schema)
     {
         parent::__construct();
         $this->generator = $generator;
         $this->str = $str;
-        $this->db = $db;
         $this->schema = $schema;
     }
 
@@ -114,6 +107,28 @@ class ApiCrudGenerator extends Command
         $timestamps = $this->option('timestamps');
         $this->generate($name, $table, $timestamps);
         return 0;
+    }
+
+
+    /**
+     * Handle all-db generation
+     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
+     */
+    protected function all()
+    {
+        try {
+            $tables =  DB::connection()->getDoctrineSchemaManager()->listTableNames();
+            foreach ($tables as $table) {
+                $this->comment("Generating " . $table . " CRUD");
+                $columns = Schema::getColumnListing($table);
+                $name = ucwords($this->str->singular($table));
+                in_array('created_at', $columns) ? $timestamps = true : $timestamps = false;
+                $this->generate($name, $table, $timestamps);
+            }
+        }
+        catch (QueryException $exception) {
+            $this->error("Error: " . $exception->getMessage());
+        }
     }
 
 
@@ -176,25 +191,4 @@ class ApiCrudGenerator extends Command
         $this->info("Generated Test!");
     }
 
-
-    /**
-     * Handle all-db generation
-     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
-     */
-    protected function all()
-    {
-        try {
-            $tables =  DB::select('SHOW TABLES');
-            foreach ($tables as $table) {
-                $this->comment("Generating " . $table->Tables_in_crud . " CRUD");
-                $columns = Schema::getColumnListing($table->Tables_in_crud);
-                $table = $table->Tables_in_crud;
-                $name = ucwords($this->str->singular($table));
-                in_array('created_at', $columns) ? $timestamps = true : $timestamps = false;
-                $this->generate($name, $table, $timestamps);
-            }
-        } catch (QueryException $exception) {
-            $this->error("Error: " . $exception->getMessage());
-        }
-    }
 }
