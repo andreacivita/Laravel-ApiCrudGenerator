@@ -139,6 +139,7 @@ You have to set all validation rules into your FormRequest class.
 E.g. For Car Crud, you will set rules into your App\Request\CarRequest.php
 
 <hr>
+
 ## CONTRIBUTING
 
 This package is covered by MIT license. You are able to do whatever you want with this code.
