@@ -35,7 +35,7 @@ class Stub
      * @param Filesystem $filesystem
      * @param Str $str
      */
-    public function __construct(Filesystem $filesystem,Str $str)
+    public function __construct(Filesystem $filesystem, Str $str)
     {
         $this->files = $filesystem;
         $this->str = $str;
@@ -89,5 +89,4 @@ class Stub
             return "Stub not found";
         }
     }
-
 }

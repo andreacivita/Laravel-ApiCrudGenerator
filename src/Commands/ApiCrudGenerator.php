@@ -98,8 +98,9 @@ class ApiCrudGenerator extends Command
         }
 
         // Checking Passport mode
-        if ($this->option('passport') == "")
+        if ($this->option('passport') == "") {
             $this->passport = true;
+        }
 
         // If here, no interactive || all selected
         $name = ucwords($this->argument('name'));
@@ -125,8 +126,7 @@ class ApiCrudGenerator extends Command
                 in_array('created_at', $columns) ? $timestamps = true : $timestamps = false;
                 $this->generate($name, $table, $timestamps);
             }
-        }
-        catch (QueryException $exception) {
+        } catch (QueryException $exception) {
             $this->error("Error: " . $exception->getMessage());
         }
     }
@@ -144,8 +144,9 @@ class ApiCrudGenerator extends Command
         $name = $this->ask('What is name of your Model?');
         $name = ucwords($name);
         $table = $this->ask("Table name [" . strtolower($this->str->plural($name)) . "]:");
-        if ($table == "")
+        if ($table == "") {
             $table = $this->str->plural($name);
+        }
         $table = strtolower($table);
         $choice = $this->choice('Do your table has timestamps column?', ['No', 'Yes'], 0);
         $choice === "Yes" ? $timestamps = true : $timestamps = false;
@@ -180,15 +181,15 @@ class ApiCrudGenerator extends Command
         $this->info("Generated Request!");
         $this->generator->resource($name);
         $this->info("Generated Resource!");
-        if ($this->passport)
+        if ($this->passport) {
             $this->generator->secureRoutes($name);
-        else
+        } else {
             $this->generator->routes($name);
+        }
         $this->info("Generated routes!");
         $this->generator->factory($name);
         $this->info("Generated Factory!");
         $this->generator->test($name);
         $this->info("Generated Test!");
     }
-
 }

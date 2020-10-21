@@ -24,7 +24,7 @@ class Generator
 
     /**
      * The Stub support instance
-     * 
+     *
      * @var \AndreaCivita\ApiCrudGenerator\Core\Stub;
      */
     protected $stub;
