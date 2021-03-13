@@ -126,7 +126,7 @@ class ApiCrudGenerator extends Command
                 in_array('created_at', $columns) ? $timestamps = true : $timestamps = false;
                 $this->generate($name, $table, $timestamps);
             }
-        } catch (QueryException $exception) {
+        catch (QueryException $exception) {
             $this->error("Error: " . $exception->getMessage());
         }
     }
