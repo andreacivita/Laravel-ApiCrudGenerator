@@ -9,10 +9,10 @@
         <whitelist processUncoveredFilesFromWhitelist="true">
             <directory suffix=".php">./src</directory>
             <exclude>
-                <group>src/ApiCrudGeneratorServiceProvider.php</group>
+                <file>src/ApiCrudGeneratorServiceProvider.php</file>
             </exclude>
             <exclude>
-                <group>src/Commands/ApiCrudGenerator.php</group>
+                <file>src/Commands/ApiCrudGenerator.php</file>
             </exclude>
         </whitelist>
     </filter>

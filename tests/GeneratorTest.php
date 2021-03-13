@@ -33,59 +33,59 @@ class GeneratorTest extends TestCase
         );
     }
 
-    public function testModel()
+    public function testModel() : void
     {
         $this->files->makeDirectory('app/Models', 0777, true);
         $this->assertIsInt($this->generator->model($this->name, "cars", true));
         $this->assertIsInt($this->generator->model($this->name, "cars", false));
     }
 
-    public function testController()
+    public function testController() : void
     {
         $this->files->makeDirectory('app/Http/Controllers', 0777, true);
         $this->assertIsInt($this->generator->controller($this->name));
     }
 
-    public function testRequest()
+    public function testRequest() : void
     {
         $this->files->makeDirectory('app/Http/Requests', 0777, true);
         $this->assertIsInt($this->generator->request($this->name));
     }
 
-    public function testResource()
+    public function testResource() : void
     {
         $this->files->makeDirectory('app/Http/Resources', 0777, true);
         $this->assertIsInt($this->generator->resource($this->name));
     }
 
-    public function testFactory()
+    public function testFactory() : void
     {
         $this->files->makeDirectory('database/factories', 0777, true);
         $this->assertIsInt($this->generator->factory($this->name));
     }
 
-    public function testRoutes()
+    public function testRoutes() : void
     {
         $this->files->makeDirectory('routes', 0777, true);
         $this->files->put('routes/api.php', "");
         $this->assertIsInt($this->generator->routes($this->name));
     }
 
-    public function testSecureRoutes()
+    public function testSecureRoutes() : void
     {
         $this->files->makeDirectory('routes', 0777, true);
         $this->files->put('routes/api.php', "");
         $this->assertIsInt($this->generator->secureRoutes($this->name));
     }
 
-    public function testMakeTests()
+    public function testMakeTests(): void
     {
         $this->files->makeDirectory('tests/Feature', 0777, true);
         $this->assertIsInt($this->generator->test($this->name));
     }
 
 
-    public function tearDown()
+    public function tearDown(): void
     {
         $files = new Illuminate\Filesystem\Filesystem();
         $files->cleanDirectory('app');
