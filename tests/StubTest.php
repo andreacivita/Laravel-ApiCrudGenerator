@@ -28,8 +28,7 @@ class StubTest extends TestCase
         try {
             $stub->parseStub("StubThatDoesNotExist", "Car");
             $this->fail("Stub not found.");
-        }
-        catch (Exception $ex) {
+        } catch (Exception $ex) {
             $this->assertEquals($ex->getMessage(), "Stub not found.");
         }
     }
