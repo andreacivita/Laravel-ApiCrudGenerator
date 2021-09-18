@@ -6,6 +6,7 @@ use AndreaCivita\ApiCrudGenerator\Core\Generator;
 class GeneratorTest extends TestCase
 {
     protected $name;
+    protected $table;
     protected $generator;
     protected $files;
 
@@ -23,6 +24,7 @@ class GeneratorTest extends TestCase
     {
         parent::setUp();
         $this->name = "Car";
+        $this->table = "cars";
         $this->generator = new Generator(
             new Illuminate\Filesystem\Filesystem(),
             new \Illuminate\Support\Str(),
@@ -36,14 +38,14 @@ class GeneratorTest extends TestCase
     public function testModel() : void
     {
         $this->files->makeDirectory('app/Models', 0777, true);
-        $this->assertIsInt($this->generator->model($this->name, "cars", true));
-        $this->assertIsInt($this->generator->model($this->name, "cars", false));
+        $this->assertIsInt($this->generator->model($this->name, $this->table, true));
+        $this->assertIsInt($this->generator->model($this->name, $this->table, false));
     }
 
     public function testController() : void
     {
         $this->files->makeDirectory('app/Http/Controllers', 0777, true);
-        $this->assertIsInt($this->generator->controller($this->name));
+        $this->assertIsInt($this->generator->controller($this->name, $this->table));
     }
 
     public function testRequest() : void
