@@ -19,14 +19,14 @@ class Stub
     /**
      * The filesystem instance.
      *
-     * @var \Illuminate\Filesystem\Filesystem
+     * @var Filesystem
      */
     protected $files;
 
     /**
      * The String support instance
      *
-     * @var \Illuminate\Support\Str
+     * @var Str
      */
     protected $str;
 
@@ -41,15 +41,14 @@ class Stub
         $this->str = $str;
     }
 
-
     /**
      * Get the file from the stub
      *
      * @param $type
-     * @return bool|string
-     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
+     * @return string
+     * @throws FileNotFoundException
      */
-    protected function getStub($type)
+    protected function getStub($type) : string
     {
         if ($this->files->exists("/resources/stubs/$type.stub")) {
             return $this->files->get("/resources/stubs/$type.stub");
@@ -59,26 +58,24 @@ class Stub
     }
 
 
-
-
     /**
      * Fill stub with data
      *
      * @param $stub string name of stub
      * @param $name string name of resource
      * @param $args array additional placeholders to replace
-     * @return mixed
+     * @return string
      */
-    public function parseStub(string $stub, string $name, array $args = [])
+    public function parseStub(string $stub, string $name, array $args = []) : string
     {
         $toParse = array_merge([
             'modelName' => $name,
-            'modelNamePluralLowerCase' => $args['table'] ?? strtolower($this->str->plural($name)),
-            'modelNameSingularLowerCase' => strtolower($name)
+            'modelNamePluralLowerCase' => $args['table'] ?? $this->str->lower($this->str->plural($name)),
+            'modelNameSingularLowerCase' => $this->str->lower($name)
         ], $args);
 
         try {
-            return str_replace(
+            return $this->str->replace(
                 array_map(function ($key) {
                     return "{{{$key}}}";
                 }, array_keys($toParse)),
