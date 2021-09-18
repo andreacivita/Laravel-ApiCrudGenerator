@@ -2,10 +2,12 @@
 
 namespace AndreaCivita\ApiCrudGenerator\Core;
 
-use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Str;
 
+/**
+ * @deprecated
+ */
 class Generator
 {
 

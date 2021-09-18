@@ -3,6 +3,13 @@
 namespace AndreaCivita\ApiCrudGenerator\Commands;
 
 use AndreaCivita\ApiCrudGenerator\Core\Generator;
+use AndreaCivita\ApiCrudGenerator\Core\Generators\ControllerGenerator;
+use AndreaCivita\ApiCrudGenerator\Core\Generators\FactoryGenerator;
+use AndreaCivita\ApiCrudGenerator\Core\Generators\ModelGenerator;
+use AndreaCivita\ApiCrudGenerator\Core\Generators\RequestGenerator;
+use AndreaCivita\ApiCrudGenerator\Core\Generators\ResourceGenerator;
+use AndreaCivita\ApiCrudGenerator\Core\Generators\RouteGenerator;
+use AndreaCivita\ApiCrudGenerator\Core\Generators\TestGenerator;
 use Doctrine\DBAL\Driver\PDOException;
 use Illuminate\Console\Command;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
@@ -42,6 +49,42 @@ class ApiCrudGenerator extends Command
      */
     protected $generator;
 
+    /**
+     * @var ControllerGenerator $controller
+     */
+    protected $controller;
+
+    /**
+     * @var FactoryGenerator $factory
+     */
+    protected $factory;
+
+    /**
+     * @var ModelGenerator $model
+     */
+    protected $model;
+
+    /**
+     * @var RequestGenerator $request
+     */
+    protected $request;
+
+    /**
+     * @var ResourceGenerator $resource
+     */
+    protected $resource;
+
+    /**
+     * @var RouteGenerator $route
+     */
+    protected $route;
+
+
+    /**
+     * @var TestGenerator $test
+     */
+    protected $test;
+
 
     /**
      * The String support instance
@@ -66,14 +109,36 @@ class ApiCrudGenerator extends Command
     /**
      * Create a new command instance.
      *
-     * @param Generator $generator
+     * @param ControllerGenerator $controllerGenerator
+     * @param FactoryGenerator $factoryGenerator
+     * @param ModelGenerator $modelGenerator
+     * @param RequestGenerator $requestGenerator
+     * @param ResourceGenerator $resourceGenerator
+     * @param RouteGenerator $routeGenerator
+     * @param TestGenerator $testGenerator
      * @param Str $str
      * @param Schema $schema
      */
-    public function __construct(Generator $generator, Str $str, Schema $schema)
+    public function __construct(
+        ControllerGenerator $controllerGenerator,
+        FactoryGenerator    $factoryGenerator,
+        ModelGenerator      $modelGenerator,
+        RequestGenerator    $requestGenerator,
+        ResourceGenerator   $resourceGenerator,
+        RouteGenerator      $routeGenerator,
+        TestGenerator       $testGenerator,
+        Str                 $str,
+        Schema              $schema
+    )
     {
         parent::__construct();
-        $this->generator = $generator;
+        $this->controller = $controllerGenerator;
+        $this->factory = $factoryGenerator;
+        $this->model = $modelGenerator;
+        $this->request = $requestGenerator;
+        $this->resource = $resourceGenerator;
+        $this->route = $routeGenerator;
+        $this->test = $testGenerator;
         $this->str = $str;
         $this->schema = $schema;
     }
@@ -83,7 +148,7 @@ class ApiCrudGenerator extends Command
      *
      * @return int
      */
-    public function handle() : int
+    public function handle(): int
     {
         // Checking interactive mode
         if ($this->option('interactive') == "") {
@@ -117,7 +182,7 @@ class ApiCrudGenerator extends Command
     protected function all()
     {
         try {
-            $tables =  DB::connection()->getDoctrineSchemaManager()->listTableNames();
+            $tables = DB::connection()->getDoctrineSchemaManager()->listTableNames();
             foreach ($tables as $table) {
                 $this->comment("Generating " . $table . " CRUD");
                 $columns = Schema::getColumnListing($table);
@@ -134,7 +199,7 @@ class ApiCrudGenerator extends Command
     /**
      * Generate CRUD in interactive mode
      */
-    protected function interactive() : void
+    protected function interactive(): void
     {
         $this->info("Welcome in Interactive mode");
 
@@ -170,25 +235,25 @@ class ApiCrudGenerator extends Command
      */
     protected function generate(string $name, string $table, bool $timestamps)
     {
-        $this->generator->controller($name, $table);
+        $this->controller->setData($name, $table)->generate();
         $this->info("Generated Controller!");
 
-        $this->generator->model($name, $table, $timestamps);
+        $this->model->setData($name, $table, $timestamps)->generate();
         $this->info("Generated Model!");
 
-        $this->generator->request($name);
+        $this->request->setData($name)->generate();
         $this->info("Generated Request!");
 
-        $this->generator->resource($name);
+        $this->resource->setData($name)->generate();
         $this->info("Generated Resource!");
 
-        $this->passport ? $this->generator->secureRoutes($name) : $this->generator->routes($name);
+        $this->route->setData($name, $this->passport)->generate();
         $this->info("Generated routes!");
 
-        $this->generator->factory($name);
+        $this->factory->setData($name)->generate();
         $this->info("Generated Factory!");
 
-        $this->generator->test($name);
+        $this->test->setData($name)->generate();
         $this->info("Generated Test!");
     }
 }
