@@ -69,11 +69,11 @@ class Stub
      * @param $args array additional placeholders to replace
      * @return mixed
      */
-    public function parseStub($stub, $name, $args = [])
+    public function parseStub(string $stub, string $name, array $args = [])
     {
         $toParse = array_merge([
             'modelName' => $name,
-            'modelNamePluralLowerCase' => strtolower($this->str->plural($name)),
+            'modelNamePluralLowerCase' => $args['table'] ?? strtolower($this->str->plural($name)),
             'modelNameSingularLowerCase' => strtolower($name)
         ], $args);
 

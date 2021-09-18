@@ -5,6 +5,7 @@ namespace AndreaCivita\ApiCrudGenerator\Commands;
 use AndreaCivita\ApiCrudGenerator\Core\Generator;
 use Doctrine\DBAL\Driver\PDOException;
 use Illuminate\Console\Command;
+use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
@@ -37,7 +38,7 @@ class ApiCrudGenerator extends Command
      *
      * Generator support instance
      *
-     * @var \AndreaCivita\ApiCrudGenerator\Core\Generator
+     * @var Generator
      */
     protected $generator;
 
@@ -45,7 +46,7 @@ class ApiCrudGenerator extends Command
     /**
      * The String support instance
      *
-     * @var \Illuminate\Support\Str
+     * @var Str
      */
     protected $str;
 
@@ -58,7 +59,7 @@ class ApiCrudGenerator extends Command
     /**
      * Schema support instance
      *
-     * @var \Illuminate\Support\Facades\Schema $schema
+     * @var Schema $schema
      */
     protected $schema;
 
@@ -80,10 +81,9 @@ class ApiCrudGenerator extends Command
     /**
      * Execute the console command.
      *
-     * @return mixed
-     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
+     * @return int
      */
-    public function handle()
+    public function handle() : int
     {
         // Checking interactive mode
         if ($this->option('interactive') == "") {
@@ -113,7 +113,6 @@ class ApiCrudGenerator extends Command
 
     /**
      * Handle all-db generation
-     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     protected function all()
     {
@@ -126,8 +125,7 @@ class ApiCrudGenerator extends Command
                 in_array('created_at', $columns) ? $timestamps = true : $timestamps = false;
                 $this->generate($name, $table, $timestamps);
             }
-        }
-        catch (QueryException $exception) {
+        } catch (QueryException $exception) {
             $this->error("Error: " . $exception->getMessage());
         }
     }
@@ -135,9 +133,8 @@ class ApiCrudGenerator extends Command
 
     /**
      * Generate CRUD in interactive mode
-     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
-    protected function interactive()
+    protected function interactive() : void
     {
         $this->info("Welcome in Interactive mode");
 
@@ -170,26 +167,27 @@ class ApiCrudGenerator extends Command
      * @param $name string Model Name
      * @param $table string Table Name
      * @param $timestamps boolean
-     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
-    protected function generate($name, $table, $timestamps)
+    protected function generate(string $name, string $table, bool $timestamps)
     {
-        $this->generator->controller($name);
+        $this->generator->controller($name, $table);
         $this->info("Generated Controller!");
+
         $this->generator->model($name, $table, $timestamps);
         $this->info("Generated Model!");
+
         $this->generator->request($name);
         $this->info("Generated Request!");
+
         $this->generator->resource($name);
         $this->info("Generated Resource!");
-        if ($this->passport) {
-            $this->generator->secureRoutes($name);
-        } else {
-            $this->generator->routes($name);
-        }
+
+        $this->passport ? $this->generator->secureRoutes($name) : $this->generator->routes($name);
         $this->info("Generated routes!");
+
         $this->generator->factory($name);
         $this->info("Generated Factory!");
+
         $this->generator->test($name);
         $this->info("Generated Test!");
     }
