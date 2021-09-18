@@ -28,7 +28,7 @@ class {{modelName}}Test extends TestCase
      *
      * @return void
      */
-    public function testIndex()
+    public function testIndex() : void
     {
         $this->getJson('/api/{{modelNameSingularLowerCase}}')
             ->assertSuccessful();
@@ -39,7 +39,7 @@ class {{modelName}}Test extends TestCase
      *
      * @return void
      */
-    public function testShow()
+    public function testShow() : void
     {
         $this->getJson('/api/{{modelNameSingularLowerCase}}/1')
             ->assertSuccessful();
@@ -53,7 +53,7 @@ class {{modelName}}Test extends TestCase
      *
      * @return void
      */
-    public function testStore()
+    public function testStore() : void
     {
         $this->postJson('/api/{{modelNameSingularLowerCase}}', $this->{{modelNameSingularLowerCase}}->toArray())
             ->assertSuccessful();
@@ -64,7 +64,7 @@ class {{modelName}}Test extends TestCase
      *
      * @return void
      */
-    public function testUpdate()
+    public function testUpdate() : void
     {
         $this->patchJson('/api/{{modelNameSingularLowerCase}}/1', $this->{{modelNameSingularLowerCase}}->toArray())
             ->assertSuccessful();
@@ -75,7 +75,7 @@ class {{modelName}}Test extends TestCase
      *
      * @return void
      */
-    public function testDestroy()
+    public function testDestroy() : void
     {
         $id = \App\Models\{{modelName}}::all()->last()->id;
 

@@ -5,13 +5,16 @@ namespace App\Http\Controllers;
 use App\Models\{{modelName}};
 use App\Http\Requests\{{modelName}}Request;
 use App\Http\Resources\{{modelName}}Resource;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Http\JsonResponse;
+
 
 class {{modelName}}Controller extends Controller
 {
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return AnonymousResourceCollection
      */
     public function index()
     {
@@ -23,8 +26,8 @@ class {{modelName}}Controller extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \App\Http\Requests\{{modelName}}Request  $request
-     * @return \Illuminate\Http\Response
+     * @param  {{modelName}}Request  $request
+     * @return {{modelName}}Resource
      */
     public function store({{modelName}}Request $request)
     {
@@ -36,8 +39,8 @@ class {{modelName}}Controller extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\{{modelName}}  ${{modelNameSingularLowerCase}}
-     * @return \Illuminate\Http\Response
+     * @param  {{modelName}}  ${{modelNameSingularLowerCase}}
+     * @return {{modelName}}Resource
      */
     public function show({{modelName}} ${{modelNameSingularLowerCase}})
     {
@@ -49,7 +52,7 @@ class {{modelName}}Controller extends Controller
      *
      * @param  \App\Http\Requests\{{modelName}}Request  $request
      * @param  \App\Models\{{modelName}}  ${{modelNameSingularLowerCase}}
-     * @return \Illuminate\Http\Response
+     * @return {{modelName}}Resource
      */
     public function update({{modelName}}Request $request, {{modelName}} ${{modelNameSingularLowerCase}})
     {
@@ -62,7 +65,7 @@ class {{modelName}}Controller extends Controller
      * Remove the specified resource from storage.
      *
      * @param  \App\Models\{{modelName}}  ${{modelNameSingularLowerCase}}
-     * @return \Illuminate\Http\Response
+     * @return JsonResponse
      */
     public function destroy({{modelName}} ${{modelNameSingularLowerCase}})
     {
