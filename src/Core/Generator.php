@@ -2,6 +2,7 @@
 
 namespace AndreaCivita\ApiCrudGenerator\Core;
 
+use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Str;
 
@@ -11,21 +12,21 @@ class Generator
     /**
      * The filesystem instance.
      *
-     * @var \Illuminate\Filesystem\Filesystem
+     * @var Filesystem
      */
     protected $files;
 
     /**
      * The String support instance
      *
-     * @var \Illuminate\Support\Str
+     * @var Str
      */
     protected $str;
 
     /**
      * The Stub support instance
      *
-     * @var \AndreaCivita\ApiCrudGenerator\Core\Stub;
+     * @var Stub;
      */
     protected $stub;
 
@@ -44,7 +45,7 @@ class Generator
      * @param $timestamps boolean set timestamps true | false
      * @return bool|int
      */
-    public function model($name, $table, $timestamps)
+    public function model(string $name, string $table, bool $timestamps)
     {
         $table === "default" ? $table = strtolower($this->str->plural($name)) : null;
 
@@ -68,11 +69,12 @@ class Generator
      * Create controller from controller.stub
      *
      * @param $name string name of model class
+     * @param $table string name of db table
      * @return bool|int
      */
-    public function controller($name)
+    public function controller(string $name, string $table)
     {
-        $content = $this->stub->parseStub('Controller', $name);
+        $content = $this->stub->parseStub('Controller', $name, ['table' => $table]);
 
         return $this->files->put("app/Http/Controllers/{$name}Controller.php", $content);
     }
@@ -80,11 +82,10 @@ class Generator
     /**
      * Generate Request from request.stub
      *
-     * @param $name
+     * @param $name string
      * @return bool|int
-     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
-    public function request($name)
+    public function request(string $name)
     {
         $content = $this->stub->parseStub('Request', $name);
 
@@ -99,7 +100,6 @@ class Generator
      *
      * @param $name
      * @return bool|int
-     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     public function resource($name)
     {
@@ -114,11 +114,10 @@ class Generator
     /**
      * Generate factory from Factory.stub
      *
-     * @param $name
+     * @param $name string
      * @return int
-     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
-    public function factory($name)
+    public function factory(string $name): int
     {
         $content = $this->stub->parseStub('Factory', $name);
 
@@ -133,7 +132,6 @@ class Generator
      *
      * @param $name
      * @return int
-     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     public function routes($name)
     {
@@ -143,11 +141,10 @@ class Generator
     }
 
     /**
-     * @param $name
+     * @param $name string
      * @return int
-     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
-    public function secureRoutes($name)
+    public function secureRoutes(string $name) : int
     {
         $content = $this->stub->parseStub('Passport-Routes', $name);
 
@@ -157,11 +154,10 @@ class Generator
     /**
      * Generate unit test
      *
-     * @param $name
+     * @param $name string
      * @return int
-     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
-    public function test($name)
+    public function test(string $name) : int
     {
         $content = $this->stub->parseStub('Test', $name);
 

@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Str;
+use App\Models\{{modelName}};
 
 class {{modelName}}Factory extends Factory
 {
@@ -10,7 +10,7 @@ class {{modelName}}Factory extends Factory
      *
      * @var string
      */
-    protected $model = \App\Models\{{modelName}}::class;
+    protected $model = {{modelName}}::class;
 
     /**
      * Define the model's default state.
