@@ -40,21 +40,31 @@ class ModelGenerator implements Generator
     protected $str;
 
     /**
-     * @param string $name
-     * @param string $table
-     * @param bool $timestamps
      * @param Filesystem $fileSystem
      * @param Stub $stub
      * @param Str $str
      */
-    public function __construct(string $name, string $table, bool $timestamps, Filesystem $fileSystem, Stub $stub, Str $str)
+    public function __construct(Filesystem $fileSystem, Stub $stub, Str $str)
+    {
+
+        $this->fileSystem = $fileSystem;
+        $this->stub = $stub;
+    }
+
+    /**
+     * @param string $name
+     * @param string $table
+     * @param bool $timestamps
+     * @return $this
+     */
+    public function setData(string $name, string $table, bool $timestamps): ModelGenerator
     {
         $this->name = $name;
         $this->table = $table;
         $this->timestamps = $timestamps;
-        $this->fileSystem = $fileSystem;
-        $this->stub = $stub;
+        return $this;
     }
+
 
     /**
      * @inheritDoc

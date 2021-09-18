@@ -13,10 +13,6 @@ class ResourceGenerator implements Generator
      */
     protected $name;
 
-    /**
-     * @var string $table
-     */
-    protected $table;
 
     /**
      * @var Filesystem $fileSystem
@@ -29,17 +25,19 @@ class ResourceGenerator implements Generator
     protected $stub;
 
     /**
-     * @param string $name
-     * @param string $table
      * @param Filesystem $fileSystem
      * @param Stub $stub
      */
-    public function __construct(string $name, string $table, Filesystem $fileSystem, Stub $stub)
+    public function __construct(Filesystem $fileSystem, Stub $stub)
     {
-        $this->name = $name;
-        $this->table = $table;
         $this->fileSystem = $fileSystem;
         $this->stub = $stub;
+    }
+
+    public function setData(string $name): ResourceGenerator
+    {
+        $this->name = $name;
+        return $this;
     }
 
     /**

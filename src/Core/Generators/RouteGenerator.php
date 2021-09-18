@@ -14,11 +14,6 @@ class RouteGenerator implements Generator
     protected $name;
 
     /**
-     * @var string $table
-     */
-    protected $table;
-
-    /**
      * @var bool $secure
      */
     protected $secure;
@@ -34,19 +29,25 @@ class RouteGenerator implements Generator
     protected $stub;
 
     /**
-     * @param string $name
-     * @param string $table
-     * @param bool $secure
      * @param Filesystem $fileSystem
      * @param Stub $stub
      */
-    public function __construct(string $name, string $table, bool $secure, Filesystem $fileSystem, Stub $stub)
+    public function __construct(Filesystem $fileSystem, Stub $stub)
     {
-        $this->name = $name;
-        $this->table = $table;
-        $this->secure = $secure;
         $this->fileSystem = $fileSystem;
         $this->stub = $stub;
+    }
+
+    /**
+     * @param string $name
+     * @param bool $secure
+     * @return $this
+     */
+    public function setData(string $name, bool $secure): RouteGenerator
+    {
+        $this->name = $name;
+        $this->secure = $secure;
+        return $this;
     }
 
     /**

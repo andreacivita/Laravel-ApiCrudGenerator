@@ -29,17 +29,26 @@ class ControllerGenerator implements Generator
     protected $stub;
 
     /**
-     * @param string $name
-     * @param string $table
      * @param Filesystem $fileSystem
      * @param Stub $stub
      */
-    public function __construct(string $name, string $table, Filesystem $fileSystem, Stub $stub)
+    public function __construct(Filesystem $fileSystem, Stub $stub)
+    {
+
+        $this->fileSystem = $fileSystem;
+        $this->stub = $stub;
+    }
+
+    /**
+     * @param string $name
+     * @param string $table
+     * @return ControllerGenerator
+     */
+    public function setData(string $name, string $table): ControllerGenerator
     {
         $this->name = $name;
         $this->table = $table;
-        $this->fileSystem = $fileSystem;
-        $this->stub = $stub;
+        return $this;
     }
 
     /**

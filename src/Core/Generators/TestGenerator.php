@@ -13,10 +13,6 @@ class TestGenerator implements Generator
      */
     protected $name;
 
-    /**
-     * @var string $table
-     */
-    protected $table;
 
     /**
      * @var Filesystem $fileSystem
@@ -29,17 +25,23 @@ class TestGenerator implements Generator
     protected $stub;
 
     /**
-     * @param string $name
-     * @param string $table
      * @param Filesystem $fileSystem
      * @param Stub $stub
      */
-    public function __construct(string $name, string $table, Filesystem $fileSystem, Stub $stub)
+    public function __construct(Filesystem $fileSystem, Stub $stub)
     {
-        $this->name = $name;
-        $this->table = $table;
         $this->fileSystem = $fileSystem;
         $this->stub = $stub;
+    }
+
+    /**
+     * @param string $name
+     * @return $this
+     */
+    public function setData(string $name): TestGenerator
+    {
+        $this->name = $name;
+        return $this;
     }
 
     /**
@@ -52,6 +54,6 @@ class TestGenerator implements Generator
         if (!$this->fileSystem->exists("tests/Feature/")) {
             $this->fileSystem->makeDirectory("tests/Feature/");
         }
-        return $this->files->append("tests/Feature/{$this->name}Test.php", $content);
+        return $this->fileSystem->append("tests/Feature/{$this->name}Test.php", $content);
     }
 }

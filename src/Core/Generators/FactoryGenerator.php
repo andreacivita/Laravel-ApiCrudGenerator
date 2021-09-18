@@ -13,10 +13,6 @@ class FactoryGenerator implements Generator
      */
     protected $name;
 
-    /**
-     * @var string $table
-     */
-    protected $table;
 
     /**
      * @var Filesystem $fileSystem
@@ -29,17 +25,23 @@ class FactoryGenerator implements Generator
     protected $stub;
 
     /**
-     * @param string $name
-     * @param string $table
      * @param Filesystem $fileSystem
      * @param Stub $stub
      */
-    public function __construct(string $name, string $table, Filesystem $fileSystem, Stub $stub)
+    public function __construct(Filesystem $fileSystem, Stub $stub)
     {
-        $this->name = $name;
-        $this->table = $table;
         $this->fileSystem = $fileSystem;
         $this->stub = $stub;
+    }
+
+    /**
+     * @param string $name
+     * @return $this
+     */
+    public function setData(string $name): FactoryGenerator
+    {
+        $this->name = $name;
+        return $this;
     }
 
     /**
@@ -47,8 +49,11 @@ class FactoryGenerator implements Generator
      */
     public function generate()
     {
-        $content = $this->stub->parseStub('Controller', $this->name, ['table' => $this->table]);
+        $content = $this->stub->parseStub('Factory', $this->name);
 
-        return $this->fileSystem->put("app/Http/Controllers/{$this->name}Controller.php", $content);
+        if (!$this->fileSystem->exists("database/factories/")) {
+            $this->fileSystem->makeDirectory("database/factories/");
+        }
+        return $this->fileSystem->put("database/factories/{$this->name}Factory.php", $content);
     }
 }
