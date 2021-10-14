@@ -21,10 +21,6 @@ class ModelGeneratorTest extends TestCase
      */
     private $tableName;
 
-    /**
-     * @var Stub $stub
-     */
-    private $stub;
 
     /**
      * @var ModelGenerator $modelGenerator
@@ -41,7 +37,7 @@ class ModelGeneratorTest extends TestCase
     public function testSetData()
     {
         $this->assertInstanceOf(
-            modelGenerator::class,
+            ModelGenerator::class,
             $this->modelGenerator->setData($this->modelName, $this->tableName, false)
         );
     }
