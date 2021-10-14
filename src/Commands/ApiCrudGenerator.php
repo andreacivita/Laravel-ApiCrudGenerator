@@ -129,8 +129,7 @@ class ApiCrudGenerator extends Command
         TestGenerator       $testGenerator,
         Str                 $str,
         Schema              $schema
-    )
-    {
+    ) {
         parent::__construct();
         $this->controller = $controllerGenerator;
         $this->factory = $factoryGenerator;

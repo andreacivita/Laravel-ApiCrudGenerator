@@ -69,7 +69,6 @@ class ModelGenerator implements Generator
      */
     public function generate()
     {
-
         $content = $this->stub->parseStub('Model', $this->name, [
             'tableDeclaration' =>  $this->table === "default" ?  $this->str->lower($this->str->plural($this->name)) : null,
             'timestamps' => $this->timestamps ? 'public $timestamps = false;' : ''
