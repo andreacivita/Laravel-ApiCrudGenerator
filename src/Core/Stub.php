@@ -21,7 +21,7 @@ class Stub
      *
      * @var Filesystem
      */
-    protected $files;
+    protected $filesystem;
 
     /**
      * The String support instance
@@ -37,24 +37,24 @@ class Stub
      */
     public function __construct(Filesystem $filesystem, Str $str)
     {
-        $this->files = $filesystem;
+        $this->filesystem = $filesystem;
         $this->str = $str;
     }
 
     /**
      * Get the file from the stub
      *
-     * @param $type
+     * @param string $name
      * @return string
      * @throws FileNotFoundException
      */
-    protected function getStub($type) : string
+    public function getStub($name) : string
     {
-        if ($this->files->exists("/resources/stubs/$type.stub")) {
-            return $this->files->get("/resources/stubs/$type.stub");
+        if ($this->filesystem->exists("/resources/stubs/$name.stub")) {
+            return $this->filesystem->get("/resources/stubs/$name.stub");
         }
 
-        return $this->files->get(__DIR__ . "/../stubs/{$type}.stub");
+        return $this->filesystem->get(__DIR__ . "/../stubs/$name.stub");
     }
 
 
@@ -85,5 +85,22 @@ class Stub
         } catch (FileNotFoundException $e) {
             return "Stub not found";
         }
+    }
+
+
+    /**
+     * @return Filesystem
+     */
+    public function getFilesystemInstance() : Filesystem
+    {
+        return $this->filesystem;
+    }
+
+    /**
+     * @return Str
+     */
+    public function getStrInstance() : Str
+    {
+        return $this->str;
     }
 }
