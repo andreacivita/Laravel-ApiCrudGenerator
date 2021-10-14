@@ -29,14 +29,12 @@ class ControllerGenerator implements Generator
     protected $stub;
 
     /**
-     * @param Filesystem $fileSystem
      * @param Stub $stub
      */
-    public function __construct(Filesystem $fileSystem, Stub $stub)
+    public function __construct(Stub $stub)
     {
-
-        $this->fileSystem = $fileSystem;
         $this->stub = $stub;
+        $this->fileSystem = $this->stub->getFilesystemInstance();
     }
 
     /**
@@ -57,6 +55,10 @@ class ControllerGenerator implements Generator
     public function generate()
     {
         $content = $this->stub->parseStub('Controller', $this->name, ['table' => $this->table]);
+
+        if (!$this->fileSystem->exists("app/Http/Controllers/")) {
+            $this->fileSystem->makeDirectory("app/Http/Controllers/", 0755, true);
+        }
 
         return $this->fileSystem->put("app/Http/Controllers/{$this->name}Controller.php", $content);
     }
