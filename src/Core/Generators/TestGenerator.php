@@ -9,10 +9,9 @@ use Illuminate\Filesystem\Filesystem;
 class TestGenerator implements Generator
 {
     /**
-     * @var string $name
+     * @var string $modelName
      */
-    protected $name;
-
+    protected $modelName;
 
     /**
      * @var Filesystem $fileSystem
@@ -25,22 +24,21 @@ class TestGenerator implements Generator
     protected $stub;
 
     /**
-     * @param Filesystem $fileSystem
      * @param Stub $stub
      */
-    public function __construct(Filesystem $fileSystem, Stub $stub)
+    public function __construct(Stub $stub)
     {
-        $this->fileSystem = $fileSystem;
         $this->stub = $stub;
+        $this->fileSystem = $this->stub->getFilesystemInstance();
     }
 
     /**
-     * @param string $name
+     * @param string $modelName
      * @return $this
      */
-    public function setData(string $name): TestGenerator
+    public function setData(string $modelName): TestGenerator
     {
-        $this->name = $name;
+        $this->modelName = $modelName;
         return $this;
     }
 
@@ -49,11 +47,11 @@ class TestGenerator implements Generator
      */
     public function generate()
     {
-        $content = $this->stub->parseStub('Test', $this->name);
+        $content = $this->stub->parseStub('Test', $this->modelName);
 
         if (!$this->fileSystem->exists("tests/Feature/")) {
-            $this->fileSystem->makeDirectory("tests/Feature/");
+            $this->fileSystem->makeDirectory("tests/Feature/", 0775, true);
         }
-        return $this->fileSystem->append("tests/Feature/{$this->name}Test.php", $content);
+        return $this->fileSystem->append("tests/Feature/{$this->modelName}Test.php", $content);
     }
 }
