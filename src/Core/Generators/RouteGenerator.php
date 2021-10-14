@@ -9,9 +9,9 @@ use Illuminate\Filesystem\Filesystem;
 class RouteGenerator implements Generator
 {
     /**
-     * @var string $name
+     * @var string $modelName
      */
-    protected $name;
+    protected $modelName;
 
     /**
      * @var bool $secure
@@ -29,23 +29,23 @@ class RouteGenerator implements Generator
     protected $stub;
 
     /**
-     * @param Filesystem $fileSystem
+     *
      * @param Stub $stub
      */
-    public function __construct(Filesystem $fileSystem, Stub $stub)
+    public function __construct(Stub $stub)
     {
-        $this->fileSystem = $fileSystem;
         $this->stub = $stub;
+        $this->fileSystem = $this->stub->getFilesystemInstance();
     }
 
     /**
-     * @param string $name
+     * @param string $modelName
      * @param bool $secure
      * @return $this
      */
-    public function setData(string $name, bool $secure): RouteGenerator
+    public function setData(string $modelName, bool $secure): RouteGenerator
     {
-        $this->name = $name;
+        $this->modelName = $modelName;
         $this->secure = $secure;
         return $this;
     }
@@ -56,7 +56,12 @@ class RouteGenerator implements Generator
     public function generate()
     {
         $fileName = $this->secure ? 'Passport-Routes' : 'Routes';
-        $content = $this->stub->parseStub($fileName, $this->name);
+        $content = $this->stub->parseStub($fileName, $this->modelName);
+
+        if (!$this->fileSystem->exists("routes/")) {
+            $this->fileSystem->makeDirectory("routes/", 0755, true);
+            $this->fileSystem->put('routes/api.php', "");
+        }
 
         return $this->fileSystem->append("routes/api.php", $content);
     }
