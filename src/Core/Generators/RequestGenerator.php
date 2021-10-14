@@ -24,18 +24,17 @@ class RequestGenerator implements Generator
     protected $stub;
 
     /**
-     * @param Filesystem $fileSystem
      * @param Stub $stub
      */
-    public function __construct(Filesystem $fileSystem, Stub $stub)
+    public function __construct(Stub $stub)
     {
-        $this->fileSystem = $fileSystem;
         $this->stub = $stub;
+        $this->fileSystem = $stub->getFilesystemInstance();
     }
 
     /**
      * @param string $name
-     * @return $this
+     * @return RequestGenerator $this
      */
     public function setData(string $name): RequestGenerator
     {
@@ -50,7 +49,7 @@ class RequestGenerator implements Generator
         $content = $this->stub->parseStub('Request', $this->name);
 
         if (!$this->fileSystem->exists("app/Http/Requests/")) {
-            $this->fileSystem->makeDirectory("app/Http/Requests/");
+            $this->fileSystem->makeDirectory("app/Http/Requests/", 0755, true);
         }
 
         return $this->fileSystem->put("app/Http/Requests/{$this->name}Request.php", $content);
