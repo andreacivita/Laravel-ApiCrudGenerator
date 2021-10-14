@@ -25,13 +25,12 @@ class ResourceGenerator implements Generator
     protected $stub;
 
     /**
-     * @param Filesystem $fileSystem
      * @param Stub $stub
      */
-    public function __construct(Filesystem $fileSystem, Stub $stub)
+    public function __construct(Stub $stub)
     {
-        $this->fileSystem = $fileSystem;
         $this->stub = $stub;
+        $this->fileSystem = $this->stub->getFilesystemInstance();
     }
 
     public function setData(string $name): ResourceGenerator
@@ -48,7 +47,7 @@ class ResourceGenerator implements Generator
         $content = $this->stub->parseStub('Resource', $this->name);
 
         if (!$this->fileSystem->exists("app/Http/Resources/")) {
-            $this->fileSystem->makeDirectory("app/Http/Resources/");
+            $this->fileSystem->makeDirectory("app/Http/Resources/", 0755, true);
         }
         return $this->fileSystem->put("app/Http/Resources/{$this->name}Resource.php", $content);
     }
