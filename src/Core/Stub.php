@@ -19,14 +19,14 @@ class Stub
     /**
      * The filesystem instance.
      *
-     * @var \Illuminate\Filesystem\Filesystem
+     * @var Filesystem
      */
-    protected $files;
+    protected $filesystem;
 
     /**
      * The String support instance
      *
-     * @var \Illuminate\Support\Str
+     * @var Str
      */
     protected $str;
 
@@ -37,28 +37,25 @@ class Stub
      */
     public function __construct(Filesystem $filesystem, Str $str)
     {
-        $this->files = $filesystem;
+        $this->filesystem = $filesystem;
         $this->str = $str;
     }
-
 
     /**
      * Get the file from the stub
      *
-     * @param $type
-     * @return bool|string
-     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
+     * @param string $name
+     * @return string
+     * @throws FileNotFoundException
      */
-    protected function getStub($type)
+    public function getStub($name) : string
     {
-        if ($this->files->exists("/resources/stubs/$type.stub")) {
-            return $this->files->get("/resources/stubs/$type.stub");
+        if ($this->filesystem->exists("/resources/stubs/$name.stub")) {
+            return $this->filesystem->get("/resources/stubs/$name.stub");
         }
 
-        return $this->files->get(__DIR__ . "/../stubs/{$type}.stub");
+        return $this->filesystem->get(__DIR__ . "/../stubs/$name.stub");
     }
-
-
 
 
     /**
@@ -67,18 +64,18 @@ class Stub
      * @param $stub string name of stub
      * @param $name string name of resource
      * @param $args array additional placeholders to replace
-     * @return mixed
+     * @return string
      */
-    public function parseStub(string $stub, string $name, array $args = [])
+    public function parseStub(string $stub, string $name, array $args = []) : string
     {
         $toParse = array_merge([
             'modelName' => $name,
-            'modelNamePluralLowerCase' => $args['table'] ?? strtolower($this->str->plural($name)),
-            'modelNameSingularLowerCase' => strtolower($name)
+            'modelNamePluralLowerCase' => $args['table'] ?? $this->str->lower($this->str->plural($name)),
+            'modelNameSingularLowerCase' => $this->str->lower($name)
         ], $args);
 
         try {
-            return str_replace(
+            return $this->str->replace(
                 array_map(function ($key) {
                     return "{{{$key}}}";
                 }, array_keys($toParse)),
@@ -88,5 +85,22 @@ class Stub
         } catch (FileNotFoundException $e) {
             return "Stub not found";
         }
+    }
+
+
+    /**
+     * @return Filesystem
+     */
+    public function getFilesystemInstance() : Filesystem
+    {
+        return $this->filesystem;
+    }
+
+    /**
+     * @return Str
+     */
+    public function getStrInstance() : Str
+    {
+        return $this->str;
     }
 }
