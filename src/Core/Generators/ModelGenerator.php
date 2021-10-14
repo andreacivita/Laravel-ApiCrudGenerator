@@ -40,15 +40,13 @@ class ModelGenerator implements Generator
     protected $str;
 
     /**
-     * @param Filesystem $fileSystem
      * @param Stub $stub
-     * @param Str $str
      */
-    public function __construct(Filesystem $fileSystem, Stub $stub, Str $str)
+    public function __construct(Stub $stub)
     {
-
-        $this->fileSystem = $fileSystem;
         $this->stub = $stub;
+        $this->fileSystem = $stub->getFilesystemInstance();
+        $this->str = $stub->getStrInstance();
     }
 
     /**
@@ -78,7 +76,7 @@ class ModelGenerator implements Generator
         ]);
 
         if (!$this->fileSystem->exists("app/Models/")) {
-            $this->fileSystem->makeDirectory("app/Models/");
+            $this->fileSystem->makeDirectory("app/Models/", 0755, true);
         }
         return $this->fileSystem->put("app/Models/{$this->name}.php", $content);
     }
