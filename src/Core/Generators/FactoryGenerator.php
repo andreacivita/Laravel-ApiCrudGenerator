@@ -25,13 +25,12 @@ class FactoryGenerator implements Generator
     protected $stub;
 
     /**
-     * @param Filesystem $fileSystem
      * @param Stub $stub
      */
-    public function __construct(Filesystem $fileSystem, Stub $stub)
+    public function __construct(Stub $stub)
     {
-        $this->fileSystem = $fileSystem;
         $this->stub = $stub;
+        $this->fileSystem = $this->stub->getFilesystemInstance();
     }
 
     /**
@@ -52,7 +51,7 @@ class FactoryGenerator implements Generator
         $content = $this->stub->parseStub('Factory', $this->name);
 
         if (!$this->fileSystem->exists("database/factories/")) {
-            $this->fileSystem->makeDirectory("database/factories/");
+            $this->fileSystem->makeDirectory("database/factories/", 0755, true);
         }
         return $this->fileSystem->put("database/factories/{$this->name}Factory.php", $content);
     }
