@@ -20,7 +20,7 @@ class {{modelName}}Test extends TestCase
     {
         parent::setUp();
 
-        $this->{{modelNameSingularLowerCase}} = \App\Models\{{modelName}}::factory()->make();
+        $this->{{modelNameSingularLowerCase}} = {{modelName}}::factory()->make();
     }
 
     /**
@@ -77,7 +77,7 @@ class {{modelName}}Test extends TestCase
      */
     public function testDestroy() : void
     {
-        $id = \App\Models\{{modelName}}::all()->last()->id;
+        $id = {{modelName}}::all()->last()->id;
 
         $this->deleteJson('/api/{{modelNameSingularLowerCase}}/'.$id)
             ->assertSuccessful();
