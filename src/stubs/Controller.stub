@@ -50,7 +50,7 @@ class {{modelName}}Controller extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \App\Http\Requests\{{modelName}}Request  $request
+     * @param  {{modelName}}Request  $request
      * @param  {{modelName}}  ${{modelNameSingularLowerCase}}
      * @return {{modelName}}Resource
      */
