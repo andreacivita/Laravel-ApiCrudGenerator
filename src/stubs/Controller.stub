@@ -50,8 +50,8 @@ class {{modelName}}Controller extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \App\Http\Requests\{{modelName}}Request  $request
-     * @param  \App\Models\{{modelName}}  ${{modelNameSingularLowerCase}}
+     * @param  {{modelName}}Request  $request
+     * @param  {{modelName}}  ${{modelNameSingularLowerCase}}
      * @return {{modelName}}Resource
      */
     public function update({{modelName}}Request $request, {{modelName}} ${{modelNameSingularLowerCase}})
@@ -64,7 +64,7 @@ class {{modelName}}Controller extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\{{modelName}}  ${{modelNameSingularLowerCase}}
+     * @param  {{modelName}}  ${{modelNameSingularLowerCase}}
      * @return JsonResponse
      */
     public function destroy({{modelName}} ${{modelNameSingularLowerCase}})
