@@ -10,7 +10,6 @@ use Illuminate\Support\Str;
  */
 class Generator
 {
-
     /**
      * The filesystem instance.
      *
@@ -146,7 +145,7 @@ class Generator
      * @param $name string
      * @return int
      */
-    public function secureRoutes(string $name) : int
+    public function secureRoutes(string $name): int
     {
         $content = $this->stub->parseStub('Passport-Routes', $name);
 
@@ -159,7 +158,7 @@ class Generator
      * @param $name string
      * @return int
      */
-    public function test(string $name) : int
+    public function test(string $name): int
     {
         $content = $this->stub->parseStub('Test', $name);
 

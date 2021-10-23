@@ -35,45 +35,45 @@ class GeneratorTest extends TestCase
         );
     }
 
-    public function testModel() : void
+    public function testModel(): void
     {
         $this->files->makeDirectory('app/Models', 0777, true);
         $this->assertIsInt($this->generator->model($this->name, $this->table, true));
         $this->assertIsInt($this->generator->model($this->name, $this->table, false));
     }
 
-    public function testController() : void
+    public function testController(): void
     {
         $this->files->makeDirectory('app/Http/Controllers', 0777, true);
         $this->assertIsInt($this->generator->controller($this->name, $this->table));
     }
 
-    public function testRequest() : void
+    public function testRequest(): void
     {
         $this->files->makeDirectory('app/Http/Requests', 0777, true);
         $this->assertIsInt($this->generator->request($this->name));
     }
 
-    public function testResource() : void
+    public function testResource(): void
     {
         $this->files->makeDirectory('app/Http/Resources', 0777, true);
         $this->assertIsInt($this->generator->resource($this->name));
     }
 
-    public function testFactory() : void
+    public function testFactory(): void
     {
         $this->files->makeDirectory('database/factories', 0777, true);
         $this->assertIsInt($this->generator->factory($this->name));
     }
 
-    public function testRoutes() : void
+    public function testRoutes(): void
     {
         $this->files->makeDirectory('routes', 0777, true);
         $this->files->put('routes/api.php', "");
         $this->assertIsInt($this->generator->routes($this->name));
     }
 
-    public function testSecureRoutes() : void
+    public function testSecureRoutes(): void
     {
         $this->files->makeDirectory('routes', 0777, true);
         $this->files->put('routes/api.php', "");

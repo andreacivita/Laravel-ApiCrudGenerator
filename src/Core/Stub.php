@@ -1,6 +1,5 @@
 <?php
 
-
 namespace AndreaCivita\ApiCrudGenerator\Core;
 
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
@@ -48,7 +47,7 @@ class Stub
      * @return string
      * @throws FileNotFoundException
      */
-    public function getStub($name) : string
+    public function getStub($name): string
     {
         if ($this->filesystem->exists("/resources/stubs/$name.stub")) {
             return $this->filesystem->get("/resources/stubs/$name.stub");
@@ -66,7 +65,7 @@ class Stub
      * @param $args array additional placeholders to replace
      * @return string
      */
-    public function parseStub(string $stub, string $name, array $args = []) : string
+    public function parseStub(string $stub, string $name, array $args = []): string
     {
         $toParse = array_merge([
             'modelName' => $name,
@@ -91,7 +90,7 @@ class Stub
     /**
      * @return Filesystem
      */
-    public function getFilesystemInstance() : Filesystem
+    public function getFilesystemInstance(): Filesystem
     {
         return $this->filesystem;
     }
@@ -99,7 +98,7 @@ class Stub
     /**
      * @return Str
      */
-    public function getStrInstance() : Str
+    public function getStrInstance(): Str
     {
         return $this->str;
     }
